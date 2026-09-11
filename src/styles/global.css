@@ -1,25 +1,28 @@
 /* ---------------------------------------------------------------
-   Design tokens — Madison isthmus palette:
-   deep lake teal, capitol-limestone cream, cardinal accent,
-   dome-gold highlight. Warm/characterful display type paired
-   with a clean, highly-legible UI face.
+   Design tokens — Madison flag palette:
+   sky blue, white, and the flag's charcoal emblem, with its gold
+   center as a highlight. Secondary accent borrows UW–Madison's
+   red/white/black. Warm/characterful display type paired with a
+   clean, highly-legible UI face.
    --------------------------------------------------------------- */
 :root {
   /* color */
-  --color-ink: #1b2430;
-  --color-ink-soft: #3c4a5a;
-  --color-paper: #faf6ee;
-  --color-paper-alt: #f1e9d6;
-  --color-paper-deep: #e7dcc0;
-  --color-lake: #1c6e8c;
-  --color-lake-deep: #123a49;
-  --color-lake-tint: #e4eef0;
-  --color-cardinal: #af2b2b;
-  --color-cardinal-deep: #8a2020;
-  --color-gold: #d69a2d;
-  --color-gold-tint: #f6e8cc;
-  --color-line: #ddd2b8;
-  --color-line-strong: #c7b98f;
+  --color-ink: #242424;
+  --color-ink-soft: #52565b;
+  --color-paper: #fafbfc;
+  --color-paper-alt: #eef6fb;
+  --color-paper-deep: #dbe7ed;
+  --color-lake: #1478a0;
+  --color-lake-deep: #0e5a78;
+  --color-lake-bright: #29abe2;
+  --color-lake-tint: #e3f4fb;
+  --color-cardinal: #c5050c;
+  --color-cardinal-deep: #9b0000;
+  --color-gold: #f0b323;
+  --color-gold-tint: #fcefd1;
+  --color-gold-ink: #7a5008;
+  --color-line: #e1e6e9;
+  --color-line-strong: #c7d0d6;
 
   /* type */
   --font-display: 'Fraunces', 'Iowan Old Style', 'Georgia', serif;
@@ -34,7 +37,7 @@
   --space-6: 4rem;
   --radius: 14px;
   --radius-sm: 8px;
-  --shadow-card: 0 1px 2px rgba(27, 36, 48, 0.06), 0 6px 20px rgba(27, 36, 48, 0.07);
+  --shadow-card: 0 1px 2px rgba(36, 36, 36, 0.06), 0 6px 20px rgba(36, 36, 36, 0.07);
   --max-width: 72rem;
 }
 
@@ -199,20 +202,20 @@ ol {
   border-radius: 999px;
   background: var(--color-lake-tint);
   color: var(--color-lake-deep);
-  border: 1px solid rgba(28, 110, 140, 0.18);
+  border: 1px solid rgba(14, 90, 120, 0.18);
   white-space: nowrap;
 }
 
 .tag--gold {
   background: var(--color-gold-tint);
-  color: #6b4a12;
-  border-color: rgba(214, 154, 45, 0.35);
+  color: var(--color-gold-ink);
+  border-color: rgba(240, 179, 35, 0.35);
 }
 
 .tag--cardinal {
-  background: rgba(175, 43, 43, 0.09);
+  background: rgba(197, 5, 12, 0.09);
   color: var(--color-cardinal-deep);
-  border-color: rgba(175, 43, 43, 0.25);
+  border-color: rgba(197, 5, 12, 0.25);
 }
 
 /* card grid */

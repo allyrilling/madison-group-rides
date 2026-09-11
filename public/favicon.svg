@@ -1,12 +1,12 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48">
-  <circle cx="24" cy="24" r="23" fill="#123a49" />
+  <circle cx="24" cy="24" r="23" fill="#242424" />
   <path
-    d="M12 32a4 4 0 1 0 0-8 4 4 0 0 0 0 8Zm20 0a4 4 0 1 0 0-8 4 4 0 0 0 0 8ZM16 24l4-9h6l4 6"
-    stroke="#faf6ee"
+    d="M15 34h18 M17 34c0-10 14-10 14 0 M24 24V12"
+    stroke="#f0b323"
     stroke-width="2.4"
     fill="none"
     stroke-linecap="round"
     stroke-linejoin="round"
   />
-  <circle cx="24" cy="13" r="1.8" fill="#d69a2d" />
+  <circle cx="24" cy="11" r="2.6" fill="#f0b323" />
 </svg>

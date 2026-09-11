@@ -29,13 +29,6 @@ import IsthmusMotif from '../components/IsthmusMotif.astro';
     align-items: center;
   }
 
-  .not-found__motif {
-    position: absolute;
-    inset: 0;
-    width: 100%;
-    height: 100%;
-  }
-
   .not-found__inner {
     position: relative;
     z-index: 1;
@@ -46,5 +39,16 @@ import IsthmusMotif from '../components/IsthmusMotif.astro';
     display: flex;
     gap: var(--space-3);
     margin-top: var(--space-4);
+  }
+</style>
+
+<style is:global>
+  /* Astro's scoped-style attribute doesn't reach elements rendered inside a
+     child component (IsthmusMotif), so this positioning must stay global. */
+  .not-found__motif {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
   }
 </style>

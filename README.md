@@ -65,4 +65,4 @@ The `/submit/` page uses [Netlify Forms](https://docs.netlify.com/forms/setup/) 
 
 ## Design notes
 
-The visual style leans into Madison's isthmus-between-two-lakes geography (see `IsthmusMotif.astro`) with a lake-teal / capitol-limestone / cardinal-accent palette defined as CSS custom properties in `src/styles/global.css`. No CSS framework or UI library — plain CSS and a handful of small vanilla-TS scripts (`scripts/filter.ts`, `scripts/map.ts`) for the interactive bits, kept dependency-light on purpose.
+The palette is drawn from the [flag of Madison](https://en.wikipedia.org/wiki/Flag_of_Madison,_Wisconsin) — sky blue, white, and the flag's charcoal emblem with its gold center as a highlight — with UW–Madison red as a secondary accent (used sparingly, e.g. for the "inactive" flag on canceled rides). Tokens are defined as CSS custom properties in `src/styles/global.css`; the isthmus-between-two-lakes motif (see `IsthmusMotif.astro`) is still there as a decorative device. No CSS framework or UI library — plain CSS and a handful of small vanilla-TS scripts (`scripts/filter.ts`, `scripts/map.ts`) for the interactive bits, kept dependency-light on purpose.

@@ -117,18 +117,10 @@ const allEventCount = (await getCollection('events', ({ data }) => data.active))
 <style>
   .hero {
     position: relative;
-    background: var(--color-lake-deep);
-    color: var(--color-paper);
+    background: var(--color-lake-bright);
+    color: var(--color-ink);
     overflow: hidden;
     padding-block: var(--space-6);
-  }
-
-  .hero__motif {
-    position: absolute;
-    inset: 0;
-    width: 100%;
-    height: 100%;
-    opacity: 0.5;
   }
 
   .hero__inner {
@@ -137,12 +129,16 @@ const allEventCount = (await getCollection('events', ({ data }) => data.active))
     max-width: 42rem;
   }
 
+  .hero .eyebrow {
+    color: var(--color-ink);
+  }
+
   .hero h1 {
-    color: var(--color-paper);
+    color: var(--color-ink);
   }
 
   .hero .lede {
-    color: rgba(250, 246, 238, 0.85);
+    color: rgba(36, 36, 36, 0.85);
   }
 
   .hero__actions {
@@ -152,8 +148,13 @@ const allEventCount = (await getCollection('events', ({ data }) => data.active))
     margin-top: var(--space-4);
   }
 
+  .hero__actions .btn--secondary {
+    border-color: var(--color-ink);
+    color: var(--color-ink);
+  }
+
   .hero__actions .btn--ghost {
-    color: var(--color-gold-tint);
+    color: var(--color-ink);
   }
 
   .three-up {
@@ -180,6 +181,19 @@ const allEventCount = (await getCollection('events', ({ data }) => data.active))
     .three-up {
       grid-template-columns: 1fr;
     }
+  }
+</style>
+
+<style is:global>
+  /* Astro's scoped-style attribute doesn't reach elements rendered inside a
+     child component (IsthmusMotif), so this positioning must stay global. */
+  .hero__motif {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    opacity: 0.5;
+    --motif-fill: var(--color-paper);
   }
 </style>
 

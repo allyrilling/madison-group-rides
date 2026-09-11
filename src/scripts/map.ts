@@ -44,8 +44,8 @@ function init() {
     maxZoom: 18,
   }).addTo(map);
 
-  const rideIcon = pinIcon('#1c6e8c');
-  const eventIcon = pinIcon('#af2b2b');
+  const rideIcon = pinIcon('#29abe2');
+  const eventIcon = pinIcon('#c5050c');
   const bounds: [number, number][] = [];
 
   markers.forEach((m) => {

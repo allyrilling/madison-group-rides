@@ -27,8 +27,8 @@ const year = new Date().getFullYear();
 
 <style>
   .site-footer {
-    background: var(--color-lake-deep);
-    color: var(--color-paper);
+    background: var(--color-lake-bright);
+    color: var(--color-ink);
     margin-top: var(--space-6);
     padding-block: var(--space-5) var(--space-4);
   }
@@ -39,7 +39,7 @@ const year = new Date().getFullYear();
     justify-content: space-between;
     gap: var(--space-4);
     padding-bottom: var(--space-4);
-    border-bottom: 1px solid rgba(250, 246, 238, 0.2);
+    border-bottom: 1px solid rgba(36, 36, 36, 0.2);
     margin-bottom: var(--space-3);
   }
 
@@ -52,7 +52,7 @@ const year = new Date().getFullYear();
 
   .site-footer__tagline {
     max-width: 32rem;
-    color: rgba(250, 246, 238, 0.75);
+    color: rgba(36, 36, 36, 0.75);
     font-size: 0.92rem;
     margin-bottom: 0;
   }
@@ -64,17 +64,17 @@ const year = new Date().getFullYear();
   }
 
   .site-footer__links a {
-    color: var(--color-gold-tint);
-    text-decoration: none;
+    color: var(--color-ink);
+    text-decoration: underline;
     font-weight: 600;
   }
 
   .site-footer__links a:hover {
-    text-decoration: underline;
+    color: var(--color-lake-deep);
   }
 
   .site-footer__fine {
-    color: rgba(250, 246, 238, 0.55);
+    color: rgba(36, 36, 36, 0.6);
     font-size: 0.82rem;
     margin-bottom: 0;
   }
