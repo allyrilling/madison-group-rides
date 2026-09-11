@@ -3,6 +3,7 @@ name: "Loop the Lake"
 organizer: "clean-lakes-alliance"
 description: "A family-friendly fundraiser ride around Lake Monona supporting lake health and water quality work, with a post-ride cookout."
 date: 2026-06-20
+startTime: "9:00 AM"
 isAnnual: true
 distanceMiles:
   min: 12

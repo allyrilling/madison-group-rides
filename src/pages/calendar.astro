@@ -1,0 +1,151 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '../layouts/BaseLayout.astro';
+import PageHero from '../components/PageHero.astro';
+import Calendar from '../components/Calendar.astro';
+import { resolveOrganizerName } from '../lib/organizer';
+import { formatRideSchedule, formatEventDate } from '../lib/labels';
+
+const allRides = await getCollection('rides', ({ data }) => data.active);
+const allEvents = await getCollection('events', ({ data }) => data.active);
+
+const rideItems = allRides
+  .filter((ride) => ride.data.daysOfWeek && ride.data.daysOfWeek.length > 0)
+  .map((ride) => ({
+    id: ride.id,
+    kind: 'ride' as const,
+    name: ride.data.name,
+    href: `/rides/${ride.id}/`,
+    days: ride.data.daysOfWeek ?? [],
+    time: ride.data.startTime,
+    seasonStart: ride.data.seasonStart,
+    seasonEnd: ride.data.seasonEnd,
+  }));
+
+const eventItems = allEvents
+  .filter((event) => event.data.date != null)
+  .map((event) => ({
+    id: event.id,
+    kind: 'event' as const,
+    name: event.data.name,
+    href: `/events/${event.id}/`,
+    dateISO: event.data.date!.toISOString().slice(0, 10),
+    time: event.data.startTime,
+  }));
+
+const calendarItems = [...rideItems, ...eventItems];
+
+// Rides with no set weekly schedule and events with no confirmed date can't
+// be placed on a grid — call them out below instead of silently dropping them.
+const unscheduledRides = allRides.filter((ride) => !ride.data.daysOfWeek || ride.data.daysOfWeek.length === 0);
+const unscheduledEvents = allEvents.filter((event) => event.data.date == null);
+
+const unscheduled = [
+  ...(await Promise.all(
+    unscheduledRides.map(async (ride) => ({
+      id: ride.id,
+      href: `/rides/${ride.id}/`,
+      name: ride.data.name,
+      organizerName: await resolveOrganizerName(ride.data),
+      detail: formatRideSchedule(ride.data),
+    }))
+  )),
+  ...(await Promise.all(
+    unscheduledEvents.map(async (event) => ({
+      id: event.id,
+      href: `/events/${event.id}/`,
+      name: event.data.name,
+      organizerName: await resolveOrganizerName(event.data),
+      detail: formatEventDate(event.data),
+    }))
+  )),
+];
+---
+
+<BaseLayout
+  title="Calendar"
+  description="A combined calendar of recurring group bike rides and dated events around Madison, WI."
+>
+  <PageHero
+    eyebrow="Calendar"
+    title="One calendar, rides and events"
+    description="Recurring weekly rides and dated events together on one grid. Toggle either off, or browse month to month."
+  />
+
+  <section class="section">
+    <div class="container">
+      <Calendar items={calendarItems} />
+
+      {
+        unscheduled.length > 0 && (
+          <div class="unscheduled">
+            <h2>Not shown on the calendar</h2>
+            <p class="unscheduled__note">
+              These don't have a fixed weekly day or a confirmed date yet, so they can't be placed on the grid above.
+            </p>
+            <ul>
+              {unscheduled.map((item) => (
+                <li>
+                  <a href={item.href}>{item.name}</a>
+                  {item.organizerName && <span class="unscheduled__organizer"> — {item.organizerName}</span>}
+                  <span class="unscheduled__detail">{item.detail}</span>
+                </li>
+              ))}
+            </ul>
+          </div>
+        )
+      }
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .unscheduled {
+    margin-top: var(--space-5);
+    padding-top: var(--space-4);
+    border-top: 1px solid var(--color-line);
+  }
+
+  .unscheduled h2 {
+    font-size: 1.1rem;
+  }
+
+  .unscheduled__note {
+    color: var(--color-ink-soft);
+    font-size: 0.9rem;
+    margin-top: -0.4em;
+  }
+
+  .unscheduled ul {
+    list-style: none;
+    padding: 0;
+    margin: var(--space-3) 0 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5em;
+  }
+
+  .unscheduled li {
+    font-size: 0.9rem;
+  }
+
+  .unscheduled__organizer {
+    color: var(--color-ink-soft);
+  }
+
+  .unscheduled__detail {
+    display: block;
+    color: var(--color-ink-soft);
+    font-size: 0.85rem;
+  }
+
+  @media (min-width: 640px) {
+    .unscheduled__detail {
+      display: inline;
+    }
+
+    .unscheduled__detail::before {
+      content: ' · ';
+    }
+  }
+</style>

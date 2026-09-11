@@ -3,6 +3,7 @@ name: "Wright Stuff Century"
 organizer: "bombay-bicycle-club"
 description: "Bombay Bicycle Club's signature annual century, passing Frank Lloyd Wright's Taliesin through the Driftless region's hills."
 date: 2026-09-06
+startTime: "7:00 AM"
 isAnnual: true
 distanceMiles:
   min: 40

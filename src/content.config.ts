@@ -88,6 +88,7 @@ const events = defineCollection({
     description: z.string(),
     date: z.coerce.date().optional(), // specific known date, if confirmed
     dateLabel: z.string().optional(), // human label when exact date isn't set, e.g. "Early June 2026"
+    startTime: z.string().optional(), // e.g. "7:00 AM"
     isAnnual: z.boolean().default(false),
     distanceMiles: paceRangeSchema,
     paceCategory: z.enum(PACE_CATEGORIES).optional(),

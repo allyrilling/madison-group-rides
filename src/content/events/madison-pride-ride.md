@@ -3,6 +3,7 @@ name: "Madison Pride Ride"
 organizer: "trek-bicycle-madison-west"
 description: "A free, celebratory LGBTQ+ visibility ride through downtown Madison at a family-friendly, slow-roll pace."
 date: 2026-06-07
+startTime: "11:00 AM"
 isAnnual: true
 distanceMiles:
   min: 3

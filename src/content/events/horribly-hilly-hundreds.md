@@ -3,6 +3,7 @@ name: "Horribly Hilly Hundreds"
 organizer: "friends-of-blue-mound-state-park"
 description: "A well-known, hilly road century-distance event through the Driftless region west of Madison, with 100K, 150K, and 200K options."
 date: 2026-06-13
+startTime: "6:45 AM"
 isAnnual: true
 distanceMiles:
   min: 62

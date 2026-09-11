@@ -3,6 +3,7 @@ name: "Trek 100"
 organizer: "trek-bicycle-corporation"
 description: "A long-running charity ride at Trek's global HQ benefiting the MACC Fund and Wisconsin Bike Fed, with distance options for every level."
 date: 2026-06-20
+startTime: "7:30 AM"
 isAnnual: true
 distanceMiles:
   min: 20
