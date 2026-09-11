@@ -1,0 +1,83 @@
+---
+import 'leaflet/dist/leaflet.css';
+
+interface MarkerInput {
+  id: string;
+  kind: 'ride' | 'event';
+  name: string;
+  organizerName?: string;
+  lat: number;
+  lng: number;
+  href: string;
+  summary: string;
+}
+
+interface Props {
+  markers: MarkerInput[];
+  height?: string;
+  showLegend?: boolean;
+}
+
+const { markers, height = '32rem', showLegend = true } = Astro.props;
+const markersJson = JSON.stringify(markers).replace(/</g, '\\u003c');
+---
+
+<div class="ride-map-wrap">
+  {
+    showLegend && (
+      <div class="ride-map-legend">
+        <span>
+          <span class="legend-dot legend-dot--ride" /> Recurring ride
+        </span>
+        <span>
+          <span class="legend-dot legend-dot--event" /> One-time event
+        </span>
+      </div>
+    )
+  }
+  <div id="ride-map" style={`height: ${height};`}></div>
+  <script type="application/json" id="map-data" set:html={markersJson} is:inline />
+</div>
+
+<style>
+  .ride-map-wrap {
+    border: 1px solid var(--color-line);
+    border-radius: var(--radius);
+    overflow: hidden;
+    box-shadow: var(--shadow-card);
+  }
+
+  #ride-map {
+    width: 100%;
+    background: var(--color-paper-alt);
+  }
+
+  .ride-map-legend {
+    display: flex;
+    gap: var(--space-4);
+    padding: var(--space-2) var(--space-3);
+    background: #fff;
+    border-bottom: 1px solid var(--color-line);
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--color-ink-soft);
+  }
+
+  .legend-dot {
+    display: inline-block;
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    margin-right: 0.4em;
+  }
+
+  .legend-dot--ride {
+    background: #1c6e8c;
+  }
+
+  .legend-dot--event {
+    background: #af2b2b;
+  }
+</style>
+
+<script src="../scripts/map.ts"></script>

@@ -1,0 +1,142 @@
+---
+const navLinks = [
+  { href: '/rides/', label: 'Recurring Rides' },
+  { href: '/events/', label: 'Events' },
+  { href: '/map/', label: 'Map' },
+  { href: '/submit/', label: 'Submit a Ride' },
+  { href: '/about/', label: 'About' },
+];
+const currentPath = Astro.url.pathname;
+---
+
+<header class="site-header">
+  <div class="container site-header__inner">
+    <a class="brand" href="/">
+      <span class="brand__mark" aria-hidden="true">
+        <svg viewBox="0 0 48 48" width="34" height="34">
+          <circle cx="24" cy="24" r="22" fill="var(--color-lake-deep)"></circle>
+          <path
+            d="M12 32a4 4 0 1 0 0-8 4 4 0 0 0 0 8Zm20 0a4 4 0 1 0 0-8 4 4 0 0 0 0 8ZM16 24l4-9h6l4 6"
+            stroke="var(--color-paper)"
+            stroke-width="2.2"
+            fill="none"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          ></path>
+          <circle cx="24" cy="13" r="1.6" fill="var(--color-gold)"></circle>
+        </svg>
+      </span>
+      <span class="brand__text">Madison Group Rides</span>
+    </a>
+
+    <button class="nav-toggle" id="nav-toggle" aria-expanded="false" aria-controls="primary-nav">
+      <span class="visually-hidden">Toggle menu</span>
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
+    </button>
+
+    <nav id="primary-nav" class="primary-nav">
+      {navLinks.map((link) => (
+        <a
+          href={link.href}
+          aria-current={currentPath === link.href ? 'page' : undefined}
+        >
+          {link.label}
+        </a>
+      ))}
+    </nav>
+  </div>
+</header>
+
+<style>
+  .site-header {
+    background: var(--color-lake-deep);
+    color: var(--color-paper);
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    border-bottom: 3px solid var(--color-gold);
+  }
+
+  .site-header__inner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding-block: var(--space-2);
+    gap: var(--space-3);
+  }
+
+  .brand {
+    display: flex;
+    align-items: center;
+    gap: 0.6em;
+    color: var(--color-paper);
+    text-decoration: none;
+    font-family: var(--font-display);
+    font-weight: 600;
+    font-size: 1.2rem;
+  }
+
+  .brand:hover {
+    color: var(--color-gold-tint);
+  }
+
+  .primary-nav {
+    display: flex;
+    gap: var(--space-4);
+    font-weight: 600;
+    font-size: 0.95rem;
+  }
+
+  .primary-nav a {
+    color: var(--color-paper);
+    text-decoration: none;
+    padding-block: 0.3em;
+    border-bottom: 2px solid transparent;
+  }
+
+  .primary-nav a:hover,
+  .primary-nav a[aria-current='page'] {
+    color: var(--color-gold-tint);
+    border-bottom-color: var(--color-gold);
+  }
+
+  .nav-toggle {
+    display: none;
+    background: transparent;
+    border: 1px solid rgba(250, 246, 238, 0.4);
+    color: var(--color-paper);
+    border-radius: var(--radius-sm);
+    padding: 0.4em;
+  }
+
+  @media (max-width: 780px) {
+    .nav-toggle {
+      display: inline-flex;
+    }
+
+    .primary-nav {
+      position: absolute;
+      inset-inline: 0;
+      top: 100%;
+      background: var(--color-lake-deep);
+      flex-direction: column;
+      padding: var(--space-3) var(--space-4);
+      gap: var(--space-2);
+      border-bottom: 3px solid var(--color-gold);
+      display: none;
+    }
+
+    .primary-nav.is-open {
+      display: flex;
+    }
+  }
+</style>
+
+<script>
+  const toggle = document.getElementById('nav-toggle');
+  const nav = document.getElementById('primary-nav');
+  toggle?.addEventListener('click', () => {
+    const isOpen = nav?.classList.toggle('is-open');
+    toggle.setAttribute('aria-expanded', String(Boolean(isOpen)));
+  });
+</script>

@@ -1,0 +1,81 @@
+---
+const year = new Date().getFullYear();
+---
+
+<footer class="site-footer">
+  <div class="container site-footer__inner">
+    <div>
+      <p class="site-footer__brand">Madison Group Rides</p>
+      <p class="site-footer__tagline">
+        An independent, community-maintained catalog of group bike rides around Madison, Wisconsin.
+        Not affiliated with any club or shop listed here.
+      </p>
+    </div>
+    <div class="site-footer__links">
+      <a href="/submit/">Submit a ride</a>
+      <a href="/about/">About &amp; corrections</a>
+      <a href="/map/">Ride map</a>
+    </div>
+  </div>
+  <div class="container">
+    <p class="site-footer__fine">
+      Ride details change — always confirm times and meeting spots with the organizer before you roll out.
+      &copy; {year} Madison Group Rides.
+    </p>
+  </div>
+</footer>
+
+<style>
+  .site-footer {
+    background: var(--color-lake-deep);
+    color: var(--color-paper);
+    margin-top: var(--space-6);
+    padding-block: var(--space-5) var(--space-4);
+  }
+
+  .site-footer__inner {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: var(--space-4);
+    padding-bottom: var(--space-4);
+    border-bottom: 1px solid rgba(250, 246, 238, 0.2);
+    margin-bottom: var(--space-3);
+  }
+
+  .site-footer__brand {
+    font-family: var(--font-display);
+    font-size: 1.2rem;
+    font-weight: 600;
+    margin-bottom: var(--space-2);
+  }
+
+  .site-footer__tagline {
+    max-width: 32rem;
+    color: rgba(250, 246, 238, 0.75);
+    font-size: 0.92rem;
+    margin-bottom: 0;
+  }
+
+  .site-footer__links {
+    display: flex;
+    flex-direction: column;
+    gap: 0.6em;
+  }
+
+  .site-footer__links a {
+    color: var(--color-gold-tint);
+    text-decoration: none;
+    font-weight: 600;
+  }
+
+  .site-footer__links a:hover {
+    text-decoration: underline;
+  }
+
+  .site-footer__fine {
+    color: rgba(250, 246, 238, 0.55);
+    font-size: 0.82rem;
+    margin-bottom: 0;
+  }
+</style>

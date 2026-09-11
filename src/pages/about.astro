@@ -1,0 +1,80 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import PageHero from '../components/PageHero.astro';
+---
+
+<BaseLayout
+  title="About"
+  description="About the Madison Group Rides catalog — what it is, how it's kept up to date, and where else to look for rides."
+>
+  <PageHero
+    eyebrow="About"
+    title="An independent, community-built catalog"
+    description="Madison Group Rides is an unofficial directory of group bicycle rides, clubs, and events around Madison, Wisconsin — built to make it easier to find your people on two wheels."
+  />
+
+  <section class="section">
+    <div class="container container--prose">
+      <h2>What this is</h2>
+      <p>
+        This site catalogs recurring group rides (shop rides, club rides, informal weekly rides) and
+        one-time or annual events (centuries, fondos, charity rides) happening in and around Madison, WI.
+        It's independently maintained and isn't affiliated with any of the shops, clubs, or organizers listed here.
+      </p>
+
+      <h2>Keep in mind</h2>
+      <p>
+        Ride schedules change — organizers move start times, take winter breaks, or wind down entirely.
+        We do our best to keep details current and flag anything unconfirmed directly on a ride's page, but
+        <strong>always double-check the day-of details with the organizer</strong> before you show up, especially
+        for early-morning or informal rides that don't have an official web presence.
+      </p>
+
+      <h2>Other places to look</h2>
+      <p>Not every ride fits neatly into a catalog entry. A few other good resources:</p>
+      <ul>
+        <li>
+          <a href="https://wisconsinbikefed.org/events/" target="_blank" rel="noopener noreferrer">Wisconsin Bike Fed's event calendar</a>
+          — the best general statewide calendar of rides and races, including many in the Madison area.
+        </li>
+        <li>
+          <a href="https://www.meetup.com/on-wisconsin-bicycle-touring-group/" target="_blank" rel="noopener noreferrer">On, Wisconsin! Bicycle Touring Group</a>
+          on Meetup — bicycle touring and adventure rides for all skill levels.
+        </li>
+        <li>
+          <a href="https://www.meetup.com/Wisconsin-Bicycling/" target="_blank" rel="noopener noreferrer">Wisconsin Bicycling</a>
+          on Meetup — a general calendar of rides across the state, including Madison-area outings.
+        </li>
+        <li>
+          <a href="https://www.facebook.com/WisconsinGravelSyndicate/" target="_blank" rel="noopener noreferrer">Wisconsin Gravel Syndicate</a>
+          on Facebook — a gravel-riding community with occasional programming rather than a fixed weekly ride.
+        </li>
+      </ul>
+
+      <h2>Something wrong, or something missing?</h2>
+      <p>
+        <a href="/submit/">Submit a correction or a new ride</a> — every submission is reviewed by a person
+        before it's published. Thanks for helping keep this useful.
+      </p>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .container--prose {
+    max-width: 42rem;
+  }
+
+  .container--prose p,
+  .container--prose li {
+    color: var(--color-ink-soft);
+  }
+
+  .container--prose ul {
+    margin-bottom: var(--space-3);
+  }
+
+  .container--prose li {
+    margin-bottom: 0.6em;
+  }
+</style>

@@ -1,0 +1,210 @@
+backend:
+  name: git-gateway
+  branch: main
+
+media_folder: "public/images/uploads"
+public_folder: "/images/uploads"
+
+collections:
+  - name: "organizers"
+    label: "Organizers (shops & clubs)"
+    folder: "src/content/organizers"
+    create: true
+    slug: "{{slug}}"
+    identifier_field: name
+    extension: md
+    fields:
+      - { label: "Name", name: "name", widget: "string" }
+      - label: "Type"
+        name: "type"
+        widget: "select"
+        options: ["shop", "club", "team", "nonprofit", "informal-group"]
+      - { label: "Website", name: "website", widget: "string", required: false }
+      - label: "Social links"
+        name: "social"
+        widget: "object"
+        required: false
+        collapsed: true
+        fields:
+          - { label: "Facebook", name: "facebook", widget: "string", required: false }
+          - { label: "Instagram", name: "instagram", widget: "string", required: false }
+          - { label: "Strava", name: "strava", widget: "string", required: false }
+          - { label: "Meetup", name: "meetup", widget: "string", required: false }
+      - { label: "Logo", name: "logo", widget: "image", required: false }
+      - { label: "Notes (body)", name: "body", widget: "markdown", required: false }
+
+  - name: "rides"
+    label: "Recurring Rides"
+    folder: "src/content/rides"
+    create: true
+    slug: "{{slug}}"
+    identifier_field: name
+    extension: md
+    fields:
+      - { label: "Name", name: "name", widget: "string" }
+      - label: "Organizer (pick from Organizers list)"
+        name: "organizer"
+        widget: "relation"
+        collection: "organizers"
+        search_fields: ["name"]
+        display_fields: ["name"]
+        value_field: "{{slug}}"
+        required: false
+      - label: "Organizer name (if not listed above)"
+        name: "organizerName"
+        widget: "string"
+        required: false
+      - { label: "Short description", name: "description", widget: "text" }
+      - label: "Recurrence"
+        name: "recurrence"
+        widget: "select"
+        options: ["weekly", "biweekly", "monthly", "seasonal", "varies"]
+      - label: "Day(s) of week"
+        name: "daysOfWeek"
+        widget: "select"
+        multiple: true
+        required: false
+        options: ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"]
+      - { label: "Start time", name: "startTime", widget: "string", required: false, hint: "e.g. 6:00 PM" }
+      - { label: "Season start month", name: "seasonStart", widget: "string", required: false, hint: "e.g. April" }
+      - { label: "Season end month", name: "seasonEnd", widget: "string", required: false, hint: "e.g. October" }
+      - label: "Distance (miles)"
+        name: "distanceMiles"
+        widget: "object"
+        required: false
+        collapsed: true
+        fields:
+          - { label: "Min", name: "min", widget: "number", value_type: "float", required: false }
+          - { label: "Max", name: "max", widget: "number", value_type: "float", required: false }
+      - label: "Pace (mph)"
+        name: "paceMph"
+        widget: "object"
+        required: false
+        collapsed: true
+        fields:
+          - { label: "Min", name: "min", widget: "number", value_type: "float", required: false }
+          - { label: "Max", name: "max", widget: "number", value_type: "float", required: false }
+      - label: "Pace category"
+        name: "paceCategory"
+        widget: "select"
+        options: ["casual", "moderate", "brisk", "fast", "varies"]
+      - label: "Drop style"
+        name: "dropStyle"
+        widget: "select"
+        options: ["no-drop", "drop", "varies"]
+      - label: "Terrain"
+        name: "terrain"
+        widget: "select"
+        multiple: true
+        options: ["road", "gravel", "mountain", "trail", "mixed"]
+      - label: "Start location"
+        name: "startLocation"
+        widget: "object"
+        fields:
+          - { label: "Name", name: "name", widget: "string" }
+          - { label: "Address", name: "address", widget: "string", required: false }
+          - { label: "Latitude", name: "lat", widget: "number", value_type: "float", required: false }
+          - { label: "Longitude", name: "lng", widget: "number", value_type: "float", required: false }
+      - { label: "Cost", name: "cost", widget: "string", required: false }
+      - { label: "Ride website", name: "website", widget: "string", required: false }
+      - { label: "Source URL", name: "sourceUrl", widget: "string", required: false }
+      - label: "Tags"
+        name: "tags"
+        widget: "list"
+        required: false
+        field: { label: "Tag", name: "tag", widget: "string" }
+      - { label: "Featured", name: "featured", widget: "boolean", default: false }
+      - {
+          label: "Active",
+          name: "active",
+          widget: "boolean",
+          default: true,
+          hint: "Uncheck instead of deleting if a ride is discontinued — it's hidden from the site but kept for reference.",
+        }
+      - { label: "Last verified", name: "lastVerified", widget: "datetime", required: false }
+      - {
+          label: "Notes / caveats",
+          name: "notes",
+          widget: "text",
+          required: false,
+          hint: "Anything uncertain — shown on the site as a small caution flag.",
+        }
+      - { label: "Extra details (body)", name: "body", widget: "markdown", required: false }
+
+  - name: "events"
+    label: "One-Time & Annual Events"
+    folder: "src/content/events"
+    create: true
+    slug: "{{slug}}"
+    identifier_field: name
+    extension: md
+    fields:
+      - { label: "Name", name: "name", widget: "string" }
+      - label: "Organizer (pick from Organizers list)"
+        name: "organizer"
+        widget: "relation"
+        collection: "organizers"
+        search_fields: ["name"]
+        display_fields: ["name"]
+        value_field: "{{slug}}"
+        required: false
+      - label: "Organizer name (if not listed above)"
+        name: "organizerName"
+        widget: "string"
+        required: false
+      - { label: "Short description", name: "description", widget: "text" }
+      - { label: "Date", name: "date", widget: "datetime", required: false }
+      - {
+          label: "Date label (if exact date isn't set)",
+          name: "dateLabel",
+          widget: "string",
+          required: false,
+          hint: "e.g. Early June 2027",
+        }
+      - { label: "Happens annually", name: "isAnnual", widget: "boolean", default: false }
+      - label: "Distance (miles)"
+        name: "distanceMiles"
+        widget: "object"
+        required: false
+        collapsed: true
+        fields:
+          - { label: "Min", name: "min", widget: "number", value_type: "float", required: false }
+          - { label: "Max", name: "max", widget: "number", value_type: "float", required: false }
+      - label: "Pace category"
+        name: "paceCategory"
+        widget: "select"
+        required: false
+        options: ["casual", "moderate", "brisk", "fast", "varies"]
+      - label: "Terrain"
+        name: "terrain"
+        widget: "select"
+        multiple: true
+        options: ["road", "gravel", "mountain", "trail", "mixed"]
+      - label: "Start location"
+        name: "startLocation"
+        widget: "object"
+        fields:
+          - { label: "Name", name: "name", widget: "string" }
+          - { label: "Address", name: "address", widget: "string", required: false }
+          - { label: "Latitude", name: "lat", widget: "number", value_type: "float", required: false }
+          - { label: "Longitude", name: "lng", widget: "number", value_type: "float", required: false }
+      - { label: "Cost", name: "cost", widget: "string", required: false }
+      - { label: "Registration URL", name: "registrationUrl", widget: "string", required: false }
+      - { label: "Event website", name: "website", widget: "string", required: false }
+      - { label: "Source URL", name: "sourceUrl", widget: "string", required: false }
+      - label: "Tags"
+        name: "tags"
+        widget: "list"
+        required: false
+        field: { label: "Tag", name: "tag", widget: "string" }
+      - { label: "Featured", name: "featured", widget: "boolean", default: false }
+      - {
+          label: "Active",
+          name: "active",
+          widget: "boolean",
+          default: true,
+          hint: "Uncheck instead of deleting if an event is canceled — it's hidden from the site but kept for reference.",
+        }
+      - { label: "Last verified", name: "lastVerified", widget: "datetime", required: false }
+      - { label: "Notes / caveats", name: "notes", widget: "text", required: false }
+      - { label: "Extra details (body)", name: "body", widget: "markdown", required: false }

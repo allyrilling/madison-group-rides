@@ -1,0 +1,344 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import RideMap from './RideMap.astro';
+import Icon from './Icon.astro';
+
+interface MarkerInput {
+  id: string;
+  kind: 'ride' | 'event';
+  name: string;
+  organizerName?: string;
+  lat: number;
+  lng: number;
+  href: string;
+  summary: string;
+}
+
+interface Props {
+  eyebrow: string;
+  title: string;
+  scheduleLabel: string;
+  badges: string[];
+  description: string;
+  locationName: string;
+  locationAddress?: string;
+  cost?: string;
+  organizerName?: string;
+  organizerWebsite?: string;
+  organizerSocial?: Record<string, string | undefined>;
+  website?: string;
+  registrationUrl?: string;
+  sourceUrl?: string;
+  notes?: string;
+  active: boolean;
+  mapMarkers: MarkerInput[];
+  backHref: string;
+  backLabel: string;
+}
+
+const {
+  eyebrow,
+  title,
+  scheduleLabel,
+  badges,
+  description,
+  locationName,
+  locationAddress,
+  cost,
+  organizerName,
+  organizerWebsite,
+  organizerSocial,
+  website,
+  registrationUrl,
+  sourceUrl,
+  notes,
+  active,
+  mapMarkers,
+  backHref,
+  backLabel,
+} = Astro.props;
+
+const socialEntries = Object.entries(organizerSocial ?? {}).filter(([, v]) => v) as [string, string][];
+---
+
+<BaseLayout title={title} description={description}>
+  <section class="section detail-hero">
+    <div class="container">
+      <a class="btn btn--ghost back-link" href={backHref}>
+        <Icon name="arrow-right" class="back-link__icon" /> {backLabel}
+      </a>
+      <p class="eyebrow">{eyebrow}</p>
+      <h1>{title}</h1>
+      {organizerName && <p class="detail-hero__organizer">{organizerName}</p>}
+
+      {
+        !active && (
+          <p class="detail-flag detail-flag--inactive">
+            This isn't currently scheduled — see the notes below before making plans around it.
+          </p>
+        )
+      }
+
+      <div class="detail-hero__badges">
+        {badges.map((b) => <span class="tag">{b}</span>)}
+      </div>
+    </div>
+  </section>
+
+  <section class="section detail-body">
+    <div class="container detail-grid">
+      <div class="detail-main">
+        <p class="lede">{description}</p>
+        <div class="prose">
+          <slot />
+        </div>
+
+        {
+          notes && (
+            <div class="detail-flag detail-flag--notes">
+              <strong>Worth knowing:</strong> {notes}
+            </div>
+          )
+        }
+
+        {
+          mapMarkers.length > 0 && (
+            <div class="detail-map">
+              <RideMap markers={mapMarkers} height="20rem" showLegend={false} />
+            </div>
+          )
+        }
+      </div>
+
+      <aside class="detail-sidebar">
+        <div class="detail-card">
+          <h2>Details</h2>
+          <dl class="detail-facts">
+            <div>
+              <dt><Icon name="clock" /> When</dt>
+              <dd>{scheduleLabel}</dd>
+            </div>
+            <div>
+              <dt><Icon name="map-pin" /> Start</dt>
+              <dd>
+                {locationName}
+                {locationAddress && <span class="detail-facts__address">{locationAddress}</span>}
+              </dd>
+            </div>
+            {
+              cost && (
+                <div>
+                  <dt>Cost</dt>
+                  <dd>{cost}</dd>
+                </div>
+              )
+            }
+          </dl>
+
+          <div class="detail-card__actions">
+            {registrationUrl && (
+              <a class="btn btn--primary" href={registrationUrl} target="_blank" rel="noopener noreferrer">
+                Register <Icon name="external-link" />
+              </a>
+            )}
+            {website && (
+              <a class="btn btn--secondary" href={website} target="_blank" rel="noopener noreferrer">
+                Ride website <Icon name="external-link" />
+              </a>
+            )}
+          </div>
+        </div>
+
+        {
+          (organizerName || socialEntries.length > 0) && (
+            <div class="detail-card">
+              <h2>Organizer</h2>
+              <p class="detail-card__organizer-name">{organizerName}</p>
+              <div class="detail-card__links">
+                {organizerWebsite && (
+                  <a href={organizerWebsite} target="_blank" rel="noopener noreferrer">
+                    Website <Icon name="external-link" />
+                  </a>
+                )}
+                {socialEntries.map(([platform, url]) => (
+                  <a href={url} target="_blank" rel="noopener noreferrer">
+                    {platform.charAt(0).toUpperCase() + platform.slice(1)} <Icon name="external-link" />
+                  </a>
+                ))}
+              </div>
+            </div>
+          )
+        }
+
+        {
+          sourceUrl && (
+            <p class="detail-source">
+              Source: <a href={sourceUrl} target="_blank" rel="noopener noreferrer">{new URL(sourceUrl).hostname}</a>
+            </p>
+          )
+        }
+
+        <p class="detail-correction">
+          Spot something outdated? <a href="/submit/">Let us know</a>.
+        </p>
+      </aside>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .back-link {
+    padding-inline: 0;
+    margin-bottom: var(--space-3);
+    flex-direction: row-reverse;
+  }
+
+  .back-link__icon {
+    transform: rotate(180deg);
+    width: 16px;
+    height: 16px;
+  }
+
+  .detail-hero {
+    background: var(--color-paper-alt);
+    border-bottom: 1px solid var(--color-line);
+    padding-block: var(--space-5);
+  }
+
+  .detail-hero__organizer {
+    font-weight: 600;
+    color: var(--color-cardinal-deep);
+    margin-bottom: var(--space-3);
+  }
+
+  .detail-hero__badges {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4em;
+  }
+
+  .detail-flag {
+    padding: 0.8em 1em;
+    border-radius: var(--radius-sm);
+    font-size: 0.92rem;
+    margin-bottom: var(--space-3);
+  }
+
+  .detail-flag--inactive {
+    background: rgba(175, 43, 43, 0.09);
+    border: 1px solid rgba(175, 43, 43, 0.3);
+    color: var(--color-cardinal-deep);
+    font-weight: 600;
+  }
+
+  .detail-flag--notes {
+    background: var(--color-gold-tint);
+    border: 1px solid rgba(214, 154, 45, 0.35);
+    color: #6b4a12;
+  }
+
+  .detail-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 20rem;
+    gap: var(--space-5);
+    align-items: start;
+  }
+
+  .prose :global(p) {
+    color: var(--color-ink-soft);
+  }
+
+  .detail-map {
+    margin-top: var(--space-4);
+  }
+
+  .detail-card {
+    background: #fff;
+    border: 1px solid var(--color-line);
+    border-radius: var(--radius);
+    padding: var(--space-4);
+    margin-bottom: var(--space-4);
+    box-shadow: var(--shadow-card);
+  }
+
+  .detail-card h2 {
+    font-size: 1.05rem;
+    margin-bottom: var(--space-3);
+  }
+
+  .detail-facts {
+    margin: 0 0 var(--space-3);
+  }
+
+  .detail-facts > div {
+    margin-bottom: var(--space-3);
+  }
+
+  .detail-facts dt {
+    display: flex;
+    align-items: center;
+    gap: 0.4em;
+    font-size: 0.78rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: var(--color-lake);
+    margin-bottom: 0.3em;
+  }
+
+  .detail-facts dd {
+    margin: 0;
+    font-weight: 600;
+  }
+
+  .detail-facts__address {
+    display: block;
+    font-weight: 400;
+    color: var(--color-ink-soft);
+    font-size: 0.9rem;
+  }
+
+  .detail-card__actions {
+    display: flex;
+    flex-direction: column;
+    gap: 0.6em;
+  }
+
+  .detail-card__actions .btn {
+    justify-content: center;
+  }
+
+  .detail-card__organizer-name {
+    font-weight: 600;
+    margin-bottom: var(--space-2);
+  }
+
+  .detail-card__links {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5em;
+  }
+
+  .detail-card__links a {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.3em;
+    font-weight: 600;
+  }
+
+  .detail-source {
+    font-size: 0.85rem;
+    color: var(--color-ink-soft);
+  }
+
+  .detail-correction {
+    font-size: 0.85rem;
+    color: var(--color-ink-soft);
+  }
+
+  @media (max-width: 840px) {
+    .detail-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

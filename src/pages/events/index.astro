@@ -1,0 +1,109 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import PageHero from '../../components/PageHero.astro';
+import FilterBar from '../../components/FilterBar.astro';
+import ListingCard from '../../components/ListingCard.astro';
+import { resolveOrganizerName } from '../../lib/organizer';
+import { formatDistance, formatEventDate, PACE_LABELS, TERRAIN_LABELS } from '../../lib/labels';
+
+const allEvents = await getCollection('events', ({ data }) => data.active);
+
+const cards = await Promise.all(
+  allEvents.map(async (event) => {
+    const organizerName = await resolveOrganizerName(event.data);
+    return {
+      id: event.id,
+      name: event.data.name,
+      organizerName,
+      date: event.data.date,
+      metaLine: formatEventDate(event.data),
+      distanceLabel: formatDistance(event.data.distanceMiles),
+      paceLabel: event.data.paceCategory ? PACE_LABELS[event.data.paceCategory] : null,
+      terrain: event.data.terrain,
+      featured: event.data.featured,
+      hasNotes: Boolean(event.data.notes),
+      filterData: {
+        terrain: event.data.terrain.join(','),
+        pace: event.data.paceCategory ?? '',
+        month: event.data.date ? String(event.data.date.getMonth() + 1) : '',
+      },
+    };
+  })
+);
+
+cards.sort((a, b) => {
+  if (a.date && b.date) return a.date.getTime() - b.date.getTime();
+  if (a.date) return -1;
+  if (b.date) return 1;
+  return a.name.localeCompare(b.name);
+});
+
+const MONTH_NAMES = [
+  'January', 'February', 'March', 'April', 'May', 'June',
+  'July', 'August', 'September', 'October', 'November', 'December',
+];
+
+const filterGroups = [
+  {
+    key: 'month',
+    label: 'Month',
+    options: MONTH_NAMES.map((label, i) => ({ value: String(i + 1), label: label.slice(0, 3) })),
+  },
+  {
+    key: 'terrain',
+    label: 'Terrain',
+    options: Object.entries(TERRAIN_LABELS).map(([value, label]) => ({ value, label })),
+  },
+  {
+    key: 'pace',
+    label: 'Pace',
+    options: Object.entries(PACE_LABELS)
+      .filter(([value]) => value !== 'varies')
+      .map(([value, label]) => ({ value, label })),
+  },
+];
+---
+
+<BaseLayout
+  title="Events"
+  description="One-time and annual group bike rides, fondos, and charity rides around Madison, WI."
+>
+  <PageHero
+    eyebrow="Events"
+    title="Century rides, fondos & fundraisers"
+    description="Dated, one-time (or once-a-year) organized rides around Madison — from hilly centuries to family-friendly fundraisers."
+  />
+
+  <section class="section">
+    <div class="container">
+      <FilterBar
+        groups={filterGroups}
+        nounSingular="event"
+        nounPlural="events"
+        searchPlaceholder="Search events or organizers…"
+      />
+      <p data-filter-empty hidden class="empty-state">
+        No events match those filters — try clearing one or two.
+      </p>
+      <div class="card-grid" data-filter-grid>
+        {
+          cards.map((card) => (
+            <ListingCard
+              href={`/events/${card.id}/`}
+              name={card.name}
+              organizerName={card.organizerName}
+              metaLine={card.metaLine}
+              distanceLabel={card.distanceLabel}
+              paceLabel={card.paceLabel}
+              terrain={card.terrain}
+              featured={card.featured}
+              hasNotes={card.hasNotes}
+              filterData={card.filterData}
+            />
+          ))
+        }
+      </div>
+    </div>
+  </section>
+</BaseLayout>

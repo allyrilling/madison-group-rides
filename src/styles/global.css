@@ -1,0 +1,293 @@
+/* ---------------------------------------------------------------
+   Design tokens — Madison isthmus palette:
+   deep lake teal, capitol-limestone cream, cardinal accent,
+   dome-gold highlight. Warm/characterful display type paired
+   with a clean, highly-legible UI face.
+   --------------------------------------------------------------- */
+:root {
+  /* color */
+  --color-ink: #1b2430;
+  --color-ink-soft: #3c4a5a;
+  --color-paper: #faf6ee;
+  --color-paper-alt: #f1e9d6;
+  --color-paper-deep: #e7dcc0;
+  --color-lake: #1c6e8c;
+  --color-lake-deep: #123a49;
+  --color-lake-tint: #e4eef0;
+  --color-cardinal: #af2b2b;
+  --color-cardinal-deep: #8a2020;
+  --color-gold: #d69a2d;
+  --color-gold-tint: #f6e8cc;
+  --color-line: #ddd2b8;
+  --color-line-strong: #c7b98f;
+
+  /* type */
+  --font-display: 'Fraunces', 'Iowan Old Style', 'Georgia', serif;
+  --font-body: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+
+  /* scale */
+  --space-1: 0.25rem;
+  --space-2: 0.5rem;
+  --space-3: 1rem;
+  --space-4: 1.5rem;
+  --space-5: 2.5rem;
+  --space-6: 4rem;
+  --radius: 14px;
+  --radius-sm: 8px;
+  --shadow-card: 0 1px 2px rgba(27, 36, 48, 0.06), 0 6px 20px rgba(27, 36, 48, 0.07);
+  --max-width: 72rem;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  color-scheme: light;
+}
+
+body {
+  margin: 0;
+  background: var(--color-paper);
+  color: var(--color-ink);
+  font-family: var(--font-body);
+  font-size: 1rem;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+}
+
+h1,
+h2,
+h3,
+h4 {
+  font-family: var(--font-display);
+  font-weight: 600;
+  line-height: 1.15;
+  margin: 0 0 var(--space-3);
+  color: var(--color-lake-deep);
+}
+
+h1 {
+  font-size: clamp(2.2rem, 4vw + 1rem, 3.4rem);
+  font-optical-sizing: auto;
+}
+
+h2 {
+  font-size: clamp(1.6rem, 2vw + 1rem, 2.2rem);
+}
+
+h3 {
+  font-size: 1.3rem;
+}
+
+p {
+  margin: 0 0 var(--space-3);
+}
+
+a {
+  color: var(--color-lake);
+  text-decoration-thickness: 1.5px;
+  text-underline-offset: 3px;
+}
+
+a:hover {
+  color: var(--color-cardinal);
+}
+
+img,
+svg {
+  max-width: 100%;
+  display: block;
+}
+
+ul,
+ol {
+  padding-left: 1.2rem;
+}
+
+.container {
+  max-width: var(--max-width);
+  margin-inline: auto;
+  padding-inline: var(--space-4);
+}
+
+.section {
+  padding-block: var(--space-6);
+}
+
+.section--alt {
+  background: var(--color-paper-alt);
+  border-top: 1px solid var(--color-line);
+  border-bottom: 1px solid var(--color-line);
+}
+
+.eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4em;
+  font-family: var(--font-body);
+  font-weight: 700;
+  font-size: 0.8rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--color-cardinal);
+  margin-bottom: var(--space-2);
+}
+
+.lede {
+  font-size: 1.15rem;
+  color: var(--color-ink-soft);
+  max-width: 42rem;
+}
+
+/* buttons */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5em;
+  font-family: var(--font-body);
+  font-weight: 600;
+  font-size: 0.95rem;
+  padding: 0.7em 1.3em;
+  border-radius: 999px;
+  border: 1.5px solid transparent;
+  cursor: pointer;
+  text-decoration: none;
+  transition: transform 0.15s ease, background 0.15s ease, color 0.15s ease, border-color 0.15s ease;
+}
+
+.btn:hover {
+  transform: translateY(-1px);
+}
+
+.btn--primary {
+  background: var(--color-cardinal);
+  color: #fff;
+}
+
+.btn--primary:hover {
+  background: var(--color-cardinal-deep);
+  color: #fff;
+}
+
+.btn--secondary {
+  background: transparent;
+  border-color: var(--color-lake-deep);
+  color: var(--color-lake-deep);
+}
+
+.btn--secondary:hover {
+  background: var(--color-lake-deep);
+  color: var(--color-paper);
+}
+
+.btn--ghost {
+  background: transparent;
+  color: var(--color-lake-deep);
+  padding-inline: 0.3em;
+}
+
+/* tags / badges */
+.tag {
+  display: inline-flex;
+  align-items: center;
+  font-size: 0.78rem;
+  font-weight: 600;
+  padding: 0.25em 0.7em;
+  border-radius: 999px;
+  background: var(--color-lake-tint);
+  color: var(--color-lake-deep);
+  border: 1px solid rgba(28, 110, 140, 0.18);
+  white-space: nowrap;
+}
+
+.tag--gold {
+  background: var(--color-gold-tint);
+  color: #6b4a12;
+  border-color: rgba(214, 154, 45, 0.35);
+}
+
+.tag--cardinal {
+  background: rgba(175, 43, 43, 0.09);
+  color: var(--color-cardinal-deep);
+  border-color: rgba(175, 43, 43, 0.25);
+}
+
+/* card grid */
+.card-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(19rem, 1fr));
+  gap: var(--space-4);
+}
+
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.skip-link {
+  position: absolute;
+  left: var(--space-3);
+  top: -3rem;
+  background: var(--color-lake-deep);
+  color: #fff;
+  padding: 0.6em 1em;
+  border-radius: var(--radius-sm);
+  z-index: 100;
+  transition: top 0.15s ease;
+}
+
+.skip-link:focus {
+  top: var(--space-3);
+}
+
+:focus-visible {
+  outline: 3px solid var(--color-gold);
+  outline-offset: 2px;
+}
+
+.empty-state {
+  text-align: center;
+  padding: var(--space-5);
+  color: var(--color-ink-soft);
+  border: 1.5px dashed var(--color-line-strong);
+  border-radius: var(--radius);
+  background: #fff;
+}
+
+/* Leaflet custom pin markers (injected client-side, so these must be global) */
+.map-pin {
+  display: block;
+  width: 18px;
+  height: 18px;
+  border-radius: 50% 50% 50% 0;
+  transform: rotate(-45deg);
+  border: 2px solid #fff;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.45);
+}
+
+.map-popup strong {
+  display: block;
+  font-family: var(--font-display);
+  color: var(--color-lake-deep);
+  margin-bottom: 0.2em;
+}
+
+.map-popup a {
+  font-weight: 600;
+}
+
+@media (max-width: 640px) {
+  .section {
+    padding-block: var(--space-5);
+  }
+}

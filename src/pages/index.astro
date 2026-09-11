@@ -1,17 +1,199 @@
 ---
+import { getCollection } from 'astro:content';
+import BaseLayout from '../layouts/BaseLayout.astro';
+import IsthmusMotif from '../components/IsthmusMotif.astro';
+import Icon from '../components/Icon.astro';
+import ListingCard from '../components/ListingCard.astro';
+import { resolveOrganizerName } from '../lib/organizer';
+import { formatDistance, formatEventDate, formatRideSchedule, PACE_LABELS, DROP_LABELS } from '../lib/labels';
 
+const featuredRides = await getCollection('rides', ({ data }) => data.active && data.featured);
+const featuredEvents = await getCollection('events', ({ data }) => data.active && data.featured);
+
+const rideCards = await Promise.all(
+  featuredRides.map(async (ride) => ({
+    kind: 'ride' as const,
+    href: `/rides/${ride.id}/`,
+    name: ride.data.name,
+    organizerName: await resolveOrganizerName(ride.data),
+    metaLine: formatRideSchedule(ride.data),
+    distanceLabel: formatDistance(ride.data.distanceMiles),
+    paceLabel: PACE_LABELS[ride.data.paceCategory],
+    dropLabel: DROP_LABELS[ride.data.dropStyle],
+    terrain: ride.data.terrain,
+  }))
+);
+
+const eventCards = await Promise.all(
+  featuredEvents.map(async (event) => ({
+    kind: 'event' as const,
+    href: `/events/${event.id}/`,
+    name: event.data.name,
+    organizerName: await resolveOrganizerName(event.data),
+    metaLine: formatEventDate(event.data),
+    distanceLabel: formatDistance(event.data.distanceMiles),
+    paceLabel: event.data.paceCategory ? PACE_LABELS[event.data.paceCategory] : null,
+    dropLabel: null,
+    terrain: event.data.terrain,
+  }))
+);
+
+const featured = [...rideCards, ...eventCards];
+
+const allRideCount = (await getCollection('rides', ({ data }) => data.active)).length;
+const allEventCount = (await getCollection('events', ({ data }) => data.active)).length;
 ---
 
-<html lang="en">
-	<head>
-		<meta charset="utf-8" />
-		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-		<link rel="icon" href="/favicon.ico" />
-		<meta name="viewport" content="width=device-width" />
-		<meta name="generator" content={Astro.generator} />
-		<title>Astro</title>
-	</head>
-	<body>
-		<h1>Astro</h1>
-	</body>
-</html>
+<BaseLayout title="Madison Group Rides">
+  <section class="hero">
+    <IsthmusMotif class="hero__motif" />
+    <div class="container hero__inner">
+      <p class="eyebrow">Madison, Wisconsin</p>
+      <h1>Two lakes, one isthmus, a lot of group rides.</h1>
+      <p class="lede">
+        A catalog of {allRideCount}+ recurring group bike rides and {allEventCount} organized events around
+        Madison — shop rides, club rides, gravel and MTB nights, centuries, and fondos. Filter by day, pace,
+        or terrain and find your next ride.
+      </p>
+      <div class="hero__actions">
+        <a class="btn btn--primary" href="/rides/">Browse recurring rides</a>
+        <a class="btn btn--secondary" href="/events/">See upcoming events</a>
+        <a class="btn btn--ghost" href="/map/">
+          <Icon name="map" /> View the map
+        </a>
+      </div>
+    </div>
+  </section>
+
+  {
+    featured.length > 0 && (
+      <section class="section">
+        <div class="container">
+          <p class="eyebrow">Featured</p>
+          <h2>Good places to start</h2>
+          <div class="card-grid">
+            {featured.map((card) => (
+              <ListingCard
+                href={card.href}
+                name={card.name}
+                organizerName={card.organizerName}
+                metaLine={card.metaLine}
+                distanceLabel={card.distanceLabel}
+                paceLabel={card.paceLabel}
+                dropLabel={card.dropLabel}
+                terrain={card.terrain}
+              />
+            ))}
+          </div>
+        </div>
+      </section>
+    )
+  }
+
+  <section class="section section--alt">
+    <div class="container three-up">
+      <div class="three-up__item">
+        <Icon name="users" class="three-up__icon" />
+        <h3>Every pace, every crowd</h3>
+        <p>No-drop social rides, women's and LGBTQ+ rides, race-pace training, and everything between.</p>
+      </div>
+      <div class="three-up__item">
+        <Icon name="trail" class="three-up__icon" />
+        <h3>Road, gravel &amp; dirt</h3>
+        <p>Road century training, Driftless gravel, and singletrack nights at CamRock and Quarry Ridge.</p>
+      </div>
+      <div class="three-up__item">
+        <Icon name="filter" class="three-up__icon" />
+        <h3>Community-maintained</h3>
+        <p>
+          Know a ride that's missing, or spot something out of date?
+          <a href="/submit/">Tell us</a> — a person reviews every submission.
+        </p>
+      </div>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .hero {
+    position: relative;
+    background: var(--color-lake-deep);
+    color: var(--color-paper);
+    overflow: hidden;
+    padding-block: var(--space-6);
+  }
+
+  .hero__motif {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    opacity: 0.5;
+  }
+
+  .hero__inner {
+    position: relative;
+    z-index: 1;
+    max-width: 42rem;
+  }
+
+  .hero h1 {
+    color: var(--color-paper);
+  }
+
+  .hero .lede {
+    color: rgba(250, 246, 238, 0.85);
+  }
+
+  .hero__actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-3);
+    margin-top: var(--space-4);
+  }
+
+  .hero__actions .btn--ghost {
+    color: var(--color-gold-tint);
+  }
+
+  .three-up {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: var(--space-4);
+  }
+
+  .three-up__item {
+    background: #fff;
+    border: 1px solid var(--color-line);
+    border-radius: var(--radius);
+    padding: var(--space-4);
+  }
+
+  .three-up__icon {
+    color: var(--color-cardinal);
+    width: 28px;
+    height: 28px;
+    margin-bottom: var(--space-2);
+  }
+
+  @media (max-width: 780px) {
+    .three-up {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>
+
+<script>
+  // Handles Netlify Identity's invite/reset-password redirect flow for the
+  // Decap CMS admin at /admin — required regardless of which page the
+  // invitation link happens to land on.
+  import netlifyIdentity from 'netlify-identity-widget';
+  netlifyIdentity.init();
+  netlifyIdentity.on('init', (user: unknown) => {
+    if (!user) {
+      netlifyIdentity.on('login', () => {
+        document.location.href = '/admin/';
+      });
+    }
+  });
+</script>

@@ -1,0 +1,114 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import PageHero from '../../components/PageHero.astro';
+import FilterBar from '../../components/FilterBar.astro';
+import ListingCard from '../../components/ListingCard.astro';
+import { resolveOrganizerName } from '../../lib/organizer';
+import {
+  formatDistance,
+  formatRideSchedule,
+  PACE_LABELS,
+  DROP_LABELS,
+  TERRAIN_LABELS,
+} from '../../lib/labels';
+
+const allRides = await getCollection('rides', ({ data }) => data.active);
+
+const cards = await Promise.all(
+  allRides.map(async (ride) => {
+    const organizerName = await resolveOrganizerName(ride.data);
+    return {
+      id: ride.id,
+      name: ride.data.name,
+      organizerName,
+      metaLine: formatRideSchedule(ride.data),
+      distanceLabel: formatDistance(ride.data.distanceMiles),
+      paceLabel: PACE_LABELS[ride.data.paceCategory],
+      dropLabel: DROP_LABELS[ride.data.dropStyle],
+      terrain: ride.data.terrain,
+      featured: ride.data.featured,
+      hasNotes: Boolean(ride.data.notes),
+      filterData: {
+        day: (ride.data.daysOfWeek ?? []).join(','),
+        terrain: ride.data.terrain.join(','),
+        pace: ride.data.paceCategory,
+        drop: ride.data.dropStyle,
+      },
+    };
+  })
+);
+
+cards.sort((a, b) => Number(b.featured) - Number(a.featured) || a.name.localeCompare(b.name));
+
+const DAY_ORDER = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
+
+const filterGroups = [
+  {
+    key: 'day',
+    label: 'Day of week',
+    options: DAY_ORDER.map((d) => ({ value: d, label: d.slice(0, 3) })),
+  },
+  {
+    key: 'terrain',
+    label: 'Terrain',
+    options: Object.entries(TERRAIN_LABELS).map(([value, label]) => ({ value, label })),
+  },
+  {
+    key: 'pace',
+    label: 'Pace',
+    options: Object.entries(PACE_LABELS)
+      .filter(([value]) => value !== 'varies')
+      .map(([value, label]) => ({ value, label })),
+  },
+  {
+    key: 'drop',
+    label: 'Drop style',
+    options: Object.entries(DROP_LABELS).map(([value, label]) => ({ value, label })),
+  },
+];
+---
+
+<BaseLayout
+  title="Recurring Rides"
+  description="Weekly and seasonal group bike rides around Madison, WI — filter by day, pace, terrain, and more."
+>
+  <PageHero
+    eyebrow="Recurring Rides"
+    title="Find your weekly ride"
+    description="Shop rides, club rides, and informal group rides that happen week after week around Madison. Filter by day, pace, or terrain to find your people."
+  />
+
+  <section class="section">
+    <div class="container">
+      <FilterBar
+        groups={filterGroups}
+        nounSingular="ride"
+        nounPlural="rides"
+        searchPlaceholder="Search rides or organizers…"
+      />
+      <p data-filter-empty hidden class="empty-state">
+        No rides match those filters — try clearing one or two.
+      </p>
+      <div class="card-grid" data-filter-grid>
+        {
+          cards.map((card) => (
+            <ListingCard
+              href={`/rides/${card.id}/`}
+              name={card.name}
+              organizerName={card.organizerName}
+              metaLine={card.metaLine}
+              distanceLabel={card.distanceLabel}
+              paceLabel={card.paceLabel}
+              dropLabel={card.dropLabel}
+              terrain={card.terrain}
+              featured={card.featured}
+              hasNotes={card.hasNotes}
+              filterData={card.filterData}
+            />
+          ))
+        }
+      </div>
+    </div>
+  </section>
+</BaseLayout>

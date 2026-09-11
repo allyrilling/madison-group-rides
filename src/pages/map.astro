@@ -1,0 +1,74 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '../layouts/BaseLayout.astro';
+import PageHero from '../components/PageHero.astro';
+import RideMap from '../components/RideMap.astro';
+import { resolveOrganizerName } from '../lib/organizer';
+import { formatRideSchedule, formatEventDate } from '../lib/labels';
+
+const rides = await getCollection(
+  'rides',
+  ({ data }) => data.active && data.startLocation.lat != null && data.startLocation.lng != null
+);
+const events = await getCollection(
+  'events',
+  ({ data }) => data.active && data.startLocation.lat != null && data.startLocation.lng != null
+);
+
+const rideMarkers = await Promise.all(
+  rides.map(async (ride) => ({
+    id: ride.id,
+    kind: 'ride' as const,
+    name: ride.data.name,
+    organizerName: await resolveOrganizerName(ride.data),
+    lat: ride.data.startLocation.lat as number,
+    lng: ride.data.startLocation.lng as number,
+    href: `/rides/${ride.id}/`,
+    summary: formatRideSchedule(ride.data),
+  }))
+);
+
+const eventMarkers = await Promise.all(
+  events.map(async (event) => ({
+    id: event.id,
+    kind: 'event' as const,
+    name: event.data.name,
+    organizerName: await resolveOrganizerName(event.data),
+    lat: event.data.startLocation.lat as number,
+    lng: event.data.startLocation.lng as number,
+    href: `/events/${event.id}/`,
+    summary: formatEventDate(event.data),
+  }))
+);
+
+const markers = [...rideMarkers, ...eventMarkers];
+---
+
+<BaseLayout
+  title="Ride Map"
+  description="A map of group bike ride and event start locations around Madison, WI."
+>
+  <PageHero
+    eyebrow="Map"
+    title="Where everyone starts"
+    description="Every pinned ride and event on one map. Click a pin for details — pin locations are approximate, so always confirm the exact meeting spot with the organizer."
+  />
+
+  <section class="section">
+    <div class="container">
+      <RideMap markers={markers} height="70vh" />
+      <p class="map-note">
+        Only rides/events with a confirmed start location are shown here — see the full
+        <a href="/rides/">rides</a> and <a href="/events/">events</a> lists for everything in the catalog.
+      </p>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .map-note {
+    margin-top: var(--space-3);
+    font-size: 0.9rem;
+    color: var(--color-ink-soft);
+  }
+</style>

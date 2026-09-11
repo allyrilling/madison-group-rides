@@ -1,0 +1,50 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import IsthmusMotif from '../components/IsthmusMotif.astro';
+---
+
+<BaseLayout title="Page Not Found">
+  <section class="not-found">
+    <IsthmusMotif class="not-found__motif" />
+    <div class="container not-found__inner">
+      <p class="eyebrow">404</p>
+      <h1>Looks like you took a wrong turn.</h1>
+      <p class="lede">That page doesn't exist — but there's a whole catalog of real Madison rides waiting.</p>
+      <div class="not-found__actions">
+        <a class="btn btn--primary" href="/rides/">Browse rides</a>
+        <a class="btn btn--secondary" href="/">Back home</a>
+      </div>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .not-found {
+    position: relative;
+    background: var(--color-paper-alt);
+    overflow: hidden;
+    padding-block: var(--space-6);
+    min-height: 50vh;
+    display: flex;
+    align-items: center;
+  }
+
+  .not-found__motif {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+  }
+
+  .not-found__inner {
+    position: relative;
+    z-index: 1;
+    max-width: 34rem;
+  }
+
+  .not-found__actions {
+    display: flex;
+    gap: var(--space-3);
+    margin-top: var(--space-4);
+  }
+</style>
