@@ -38,6 +38,8 @@ export const ORGANIZER_TYPE_LABELS: Record<string, string> = {
   'informal-group': 'Informal Group',
 };
 
+export const WINTER_HIATUS_LABEL = 'Winter hiatus';
+
 export const DAY_ABBREVIATIONS: Record<string, string> = {
   Sunday: 'Sun',
   Monday: 'Mon',
@@ -82,6 +84,9 @@ export function formatRideSchedule(ride: CollectionEntry<'rides'>['data']): stri
   }
   if (ride.seasonStart && ride.seasonEnd) {
     schedule += ` · ${ride.seasonStart}–${ride.seasonEnd}`;
+  }
+  if (ride.winterHiatus) {
+    schedule += ` · ${WINTER_HIATUS_LABEL}`;
   }
   return schedule;
 }

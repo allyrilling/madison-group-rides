@@ -121,6 +121,13 @@ collections:
           default: true,
           hint: "Uncheck instead of deleting if a ride is discontinued — it's hidden from the site but kept for reference.",
         }
+      - {
+          label: "On winter hiatus",
+          name: "winterHiatus",
+          widget: "boolean",
+          default: false,
+          hint: "Check when a ride pauses for the season — it stays listed but shows a winter hiatus flag. Uncheck when it resumes.",
+        }
       - { label: "Last verified", name: "lastVerified", widget: "datetime", required: false }
       - {
           label: "Notes / caveats",

@@ -8,6 +8,7 @@ interface CalRide {
   time?: string;
   seasonStart?: string;
   seasonEnd?: string;
+  winterHiatus?: boolean;
 }
 
 interface CalEvent {
@@ -279,6 +280,11 @@ const WEEKDAY_LABELS = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
   .cal-entry--event {
     background: rgba(197, 5, 12, 0.12);
     color: var(--color-cardinal-deep);
+  }
+
+  .cal-entry--hiatus {
+    font-style: italic;
+    border: 1px dashed var(--color-line-strong);
   }
 
   .cal-entry:hover {

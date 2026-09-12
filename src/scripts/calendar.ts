@@ -9,6 +9,7 @@ interface CalRide {
   time?: string;
   seasonStart?: string;
   seasonEnd?: string;
+  winterHiatus?: boolean;
 }
 
 interface CalEvent {
@@ -131,10 +132,12 @@ function init() {
         return `<a class="cal-entry cal-entry--event" href="${e.href}" title="${escapeHtml(title)}">${label}</a>`;
       }),
       ...dayRides.map((r) => {
-        const color = colorForRide(r.id);
-        const label = `${r.time ? `${escapeHtml(r.time)} ` : ''}${escapeHtml(r.name)}`;
-        const title = `${r.name}${r.time ? ` · ${r.time}` : ''} (recurring ride)`;
-        return `<a class="cal-entry cal-entry--ride" style="background:${color.bg};color:${color.fg}" href="${r.href}" title="${escapeHtml(title)}">${label}</a>`;
+        const color = r.winterHiatus ? { bg: 'var(--color-paper-deep)', fg: 'var(--color-ink-soft)' } : colorForRide(r.id);
+        const prefix = r.winterHiatus ? '❄ ' : '';
+        const label = `${prefix}${r.time ? `${escapeHtml(r.time)} ` : ''}${escapeHtml(r.name)}`;
+        const title = `${r.name}${r.time ? ` · ${r.time}` : ''} (recurring ride)${r.winterHiatus ? ' — on winter hiatus' : ''}`;
+        const hiatusClass = r.winterHiatus ? ' cal-entry--hiatus' : '';
+        return `<a class="cal-entry cal-entry--ride${hiatusClass}" style="background:${color.bg};color:${color.fg}" href="${r.href}" title="${escapeHtml(title)}">${label}</a>`;
       }),
     ].join('');
 

@@ -33,6 +33,7 @@ interface Props {
   sourceUrl?: string;
   notes?: string;
   active: boolean;
+  winterHiatus?: boolean;
   mapMarkers: MarkerInput[];
   backHref: string;
   backLabel: string;
@@ -55,6 +56,7 @@ const {
   sourceUrl,
   notes,
   active,
+  winterHiatus = false,
   mapMarkers,
   backHref,
   backLabel,
@@ -77,6 +79,14 @@ const socialEntries = Object.entries(organizerSocial ?? {}).filter(([, v]) => v)
         !active && (
           <p class="detail-flag detail-flag--inactive">
             This isn't currently scheduled — see the notes below before making plans around it.
+          </p>
+        )
+      }
+
+      {
+        active && winterHiatus && (
+          <p class="detail-flag detail-flag--hiatus">
+            <Icon name="snowflake" class="detail-flag__icon" /> On winter hiatus — this ride will pick back up when the season starts again.
           </p>
         )
       }
@@ -248,6 +258,22 @@ const socialEntries = Object.entries(organizerSocial ?? {}).filter(([, v]) => v)
     background: var(--color-gold-tint);
     border: 1px solid rgba(240, 179, 35, 0.35);
     color: var(--color-gold-ink);
+  }
+
+  .detail-flag--hiatus {
+    display: flex;
+    align-items: center;
+    gap: 0.4em;
+    background: var(--color-paper-deep);
+    border: 1px solid var(--color-line-strong);
+    color: var(--color-ink-soft);
+    font-weight: 600;
+  }
+
+  .detail-flag__icon {
+    width: 16px;
+    height: 16px;
+    flex-shrink: 0;
   }
 
   .detail-grid {

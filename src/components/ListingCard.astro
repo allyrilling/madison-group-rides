@@ -1,6 +1,6 @@
 ---
 import Icon from './Icon.astro';
-import { TERRAIN_ICONS, TERRAIN_LABELS } from '../lib/labels.ts';
+import { TERRAIN_ICONS, TERRAIN_LABELS, WINTER_HIATUS_LABEL } from '../lib/labels.ts';
 
 interface Props {
   href: string;
@@ -12,6 +12,7 @@ interface Props {
   dropLabel?: string | null;
   terrain: string[];
   featured?: boolean;
+  winterHiatus?: boolean;
   hasNotes?: boolean;
   // data attributes consumed by the client-side filter script
   filterData?: Record<string, string>;
@@ -27,6 +28,7 @@ const {
   dropLabel,
   terrain,
   featured = false,
+  winterHiatus = false,
   hasNotes = false,
   filterData = {},
 } = Astro.props;
@@ -41,6 +43,12 @@ const {
     {metaLine}
   </p>
   <div class="listing-card__stats">
+    {winterHiatus && (
+      <span class="tag tag--frost">
+        <Icon name="snowflake" class="tag__icon" />
+        {WINTER_HIATUS_LABEL}
+      </span>
+    )}
     {distanceLabel && (
       <span class="tag">
         <Icon name="ruler" class="tag__icon" />

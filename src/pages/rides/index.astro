@@ -30,18 +30,25 @@ const cards = await Promise.all(
       dropLabel: DROP_LABELS[ride.data.dropStyle],
       terrain: ride.data.terrain,
       featured: ride.data.featured,
+      winterHiatus: ride.data.winterHiatus,
       hasNotes: Boolean(ride.data.notes),
       filterData: {
         day: (ride.data.daysOfWeek ?? []).join(','),
         terrain: ride.data.terrain.join(','),
         pace: ride.data.paceCategory,
         drop: ride.data.dropStyle,
+        status: ride.data.winterHiatus ? 'hiatus' : 'active',
       },
     };
   })
 );
 
-cards.sort((a, b) => Number(b.featured) - Number(a.featured) || a.name.localeCompare(b.name));
+cards.sort(
+  (a, b) =>
+    Number(b.featured) - Number(a.featured) ||
+    Number(a.winterHiatus) - Number(b.winterHiatus) ||
+    a.name.localeCompare(b.name)
+);
 
 const rideMarkers = await Promise.all(
   allRides
@@ -82,6 +89,14 @@ const filterGroups = [
     key: 'drop',
     label: 'Drop style',
     options: Object.entries(DROP_LABELS).map(([value, label]) => ({ value, label })),
+  },
+  {
+    key: 'status',
+    label: 'Status',
+    options: [
+      { value: 'active', label: 'Currently running' },
+      { value: 'hiatus', label: 'Winter hiatus' },
+    ],
   },
 ];
 ---
@@ -127,6 +142,7 @@ const filterGroups = [
               dropLabel={card.dropLabel}
               terrain={card.terrain}
               featured={card.featured}
+              winterHiatus={card.winterHiatus}
               hasNotes={card.hasNotes}
               filterData={card.filterData}
             />

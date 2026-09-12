@@ -218,6 +218,12 @@ ol {
   border-color: rgba(197, 5, 12, 0.25);
 }
 
+.tag--frost {
+  background: var(--color-paper-deep);
+  color: var(--color-ink-soft);
+  border-color: var(--color-line-strong);
+}
+
 /* card grid */
 .card-grid {
   display: grid;

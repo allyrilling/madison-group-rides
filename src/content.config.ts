@@ -80,6 +80,7 @@ const rides = defineCollection({
     tags: z.array(z.string()).optional(),
     featured: z.boolean().default(false),
     active: z.boolean().default(true),
+    winterHiatus: z.boolean().default(false), // paused for the season but not discontinued
     lastVerified: z.coerce.date().optional(),
     notes: z.string().optional(), // e.g. "unconfirmed for 2026 season"
   }),
