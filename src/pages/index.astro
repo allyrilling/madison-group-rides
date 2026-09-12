@@ -51,11 +51,11 @@ const allEventCount = (await getCollection('events', ({ data }) => data.active))
     <CapitolGlyph class="hero__capitol" />
     <div class="container hero__inner">
       <p class="eyebrow">Madison, Wisconsin</p>
-      <h1>Four lakes, one isthmus, a lot of group rides.</h1>
+      <h1>Rides, shops, clubs, and events — all in one place.</h1>
       <p class="lede">
-        A catalog of {allRideCount}+ recurring group bike rides and {allEventCount} organized events around
-        Madison — shop rides, club rides, gravel and MTB nights, centuries, and fondos. Filter by day, pace,
-        or terrain and find your next ride.
+        A catalog of {allRideCount}+ recurring group bike rides, {allEventCount} organized events, and every
+        bike shop and cycling club around Madison — road, gravel, and mountain bike alike. Filter by day, pace,
+        or terrain, browse the map, or just find your people on two wheels.
       </p>
       <div class="hero__actions">
         <a class="btn btn--primary" href="/rides/">Browse recurring rides</a>
@@ -98,28 +98,6 @@ const allEventCount = (await getCollection('events', ({ data }) => data.active))
     )
   }
 
-  <section class="section section--alt">
-    <div class="container three-up">
-      <div class="three-up__item">
-        <Icon name="users" class="three-up__icon" />
-        <h3>Every pace, every crowd</h3>
-        <p>No-drop social rides, women's and LGBTQ+ rides, race-pace training, and everything between.</p>
-      </div>
-      <div class="three-up__item">
-        <Icon name="trail" class="three-up__icon" />
-        <h3>Road, gravel &amp; dirt</h3>
-        <p>Road century training, Driftless gravel, and singletrack nights at CamRock and Quarry Ridge.</p>
-      </div>
-      <div class="three-up__item">
-        <Icon name="filter" class="three-up__icon" />
-        <h3>Community-maintained</h3>
-        <p>
-          Know a ride that's missing, or spot something out of date?
-          <a href="/submit/">Tell us</a> — a person reviews every submission.
-        </p>
-      </div>
-    </div>
-  </section>
 </BaseLayout>
 
 <style>
@@ -174,32 +152,6 @@ const allEventCount = (await getCollection('events', ({ data }) => data.active))
 
   .hero__actions .btn--ghost {
     color: var(--color-ink);
-  }
-
-  .three-up {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: var(--space-4);
-  }
-
-  .three-up__item {
-    background: #fff;
-    border: 1px solid var(--color-line);
-    border-radius: var(--radius);
-    padding: var(--space-4);
-  }
-
-  .three-up__icon {
-    color: var(--color-cardinal);
-    width: 28px;
-    height: 28px;
-    margin-bottom: var(--space-2);
-  }
-
-  @media (max-width: 780px) {
-    .three-up {
-      grid-template-columns: 1fr;
-    }
   }
 </style>
 
