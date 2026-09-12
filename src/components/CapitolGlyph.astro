@@ -1,0 +1,22 @@
+---
+// Small standalone Capitol-dome landmark glyph. Kept separate from
+// IsthmusMotif (which uses preserveAspectRatio="slice" to cover the hero)
+// so its position is never subject to that cover-cropping — hero height
+// varies per page, and the glyph was getting clipped on shorter heroes.
+interface Props {
+  class?: string;
+}
+const { class: className = '' } = Astro.props;
+---
+
+<svg class={className} viewBox="0 0 46 50" aria-hidden="true" focusable="false">
+  <circle cx="23" cy="11" r="5" fill="var(--color-gold)" opacity="0.8" />
+  <path
+    d="M23,11 L23,43 M5,43 L41,43 M11,43 C11,25 35,25 35,43"
+    stroke="var(--color-gold)"
+    stroke-width="3"
+    fill="none"
+    opacity="0.8"
+    stroke-linecap="round"
+  />
+</svg>

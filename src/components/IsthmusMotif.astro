@@ -1,7 +1,8 @@
 ---
 // Abstract line-art evoking Madison's isthmus between Lake Mendota (top)
-// and Lake Monona (bottom), with the Capitol dome as a small landmark.
-// Purely decorative — hidden from assistive tech.
+// and Lake Monona (bottom). Purely decorative — hidden from assistive tech.
+// The Capitol dome landmark lives in a separate CapitolGlyph component,
+// since it needs fixed positioning independent of this SVG's cover-crop.
 interface Props {
   class?: string;
 }
@@ -24,14 +25,5 @@ const { class: className = '' } = Astro.props;
     d="M0,340 C130,380 240,310 360,345 C480,380 580,320 700,355 C750,372 780,362 800,348 L800,400 L0,400 Z"
     fill="var(--motif-fill, var(--color-lake-bright))"
     opacity="0.16"
-  />
-  <circle cx="660" cy="118" r="5" fill="var(--color-gold)" opacity="0.8" />
-  <path
-    d="M660,118 L660,150 M642,150 L678,150 M648,150 C648,132 672,132 672,150"
-    stroke="var(--color-gold)"
-    stroke-width="3"
-    fill="none"
-    opacity="0.8"
-    stroke-linecap="round"
   />
 </svg>

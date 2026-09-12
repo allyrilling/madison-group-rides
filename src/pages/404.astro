@@ -1,11 +1,13 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
 import IsthmusMotif from '../components/IsthmusMotif.astro';
+import CapitolGlyph from '../components/CapitolGlyph.astro';
 ---
 
 <BaseLayout title="Page Not Found">
   <section class="not-found">
     <IsthmusMotif class="not-found__motif" />
+    <CapitolGlyph class="not-found__capitol" />
     <div class="container not-found__inner">
       <p class="eyebrow">404</p>
       <h1>Looks like you took a wrong turn.</h1>
@@ -50,5 +52,13 @@ import IsthmusMotif from '../components/IsthmusMotif.astro';
     inset: 0;
     width: 100%;
     height: 100%;
+  }
+
+  .not-found__capitol {
+    position: absolute;
+    top: 1.5rem;
+    right: 2rem;
+    width: 2.25rem;
+    height: auto;
   }
 </style>

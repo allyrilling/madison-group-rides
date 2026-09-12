@@ -2,6 +2,7 @@
 import { getCollection } from 'astro:content';
 import BaseLayout from '../layouts/BaseLayout.astro';
 import IsthmusMotif from '../components/IsthmusMotif.astro';
+import CapitolGlyph from '../components/CapitolGlyph.astro';
 import Icon from '../components/Icon.astro';
 import ListingCard from '../components/ListingCard.astro';
 import { resolveOrganizerName } from '../lib/organizer';
@@ -47,6 +48,7 @@ const allEventCount = (await getCollection('events', ({ data }) => data.active))
 <BaseLayout title="Madison Group Rides">
   <section class="hero">
     <IsthmusMotif class="hero__motif" />
+    <CapitolGlyph class="hero__capitol" />
     <div class="container hero__inner">
       <p class="eyebrow">Madison, Wisconsin</p>
       <h1>Four lakes, one isthmus, a lot of group rides.</h1>
@@ -211,6 +213,14 @@ const allEventCount = (await getCollection('events', ({ data }) => data.active))
     height: 100%;
     opacity: 0.5;
     --motif-fill: var(--color-paper);
+  }
+
+  .hero__capitol {
+    position: absolute;
+    top: 1.5rem;
+    right: 2rem;
+    width: 2.25rem;
+    height: auto;
   }
 </style>
 
