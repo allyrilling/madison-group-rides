@@ -2,6 +2,8 @@
 import { getCollection } from 'astro:content';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import PageHero from '../../components/PageHero.astro';
+import SectionSwitch from '../../components/SectionSwitch.astro';
+import RideMap from '../../components/RideMap.astro';
 import FilterBar from '../../components/FilterBar.astro';
 import ListingCard from '../../components/ListingCard.astro';
 import { resolveOrganizerName } from '../../lib/organizer';
@@ -38,6 +40,21 @@ cards.sort((a, b) => {
   if (b.date) return 1;
   return a.name.localeCompare(b.name);
 });
+
+const eventMarkers = await Promise.all(
+  allEvents
+    .filter((event) => event.data.startLocation.lat != null && event.data.startLocation.lng != null)
+    .map(async (event) => ({
+      id: event.id,
+      kind: 'event' as const,
+      name: event.data.name,
+      organizerName: await resolveOrganizerName(event.data),
+      lat: event.data.startLocation.lat as number,
+      lng: event.data.startLocation.lng as number,
+      href: `/events/${event.id}/`,
+      summary: formatEventDate(event.data),
+    }))
+);
 
 const MONTH_NAMES = [
   'January', 'February', 'March', 'April', 'May', 'June',
@@ -77,6 +94,13 @@ const filterGroups = [
 
   <section class="section">
     <div class="container">
+      <SectionSwitch active="events" />
+
+      <RideMap markers={eventMarkers} height="24rem" showLegend={false} />
+      <p class="map-note">
+        Only events with a confirmed start location appear on the map — everything else is still listed below.
+      </p>
+
       <FilterBar
         groups={filterGroups}
         nounSingular="event"
@@ -107,3 +131,12 @@ const filterGroups = [
     </div>
   </section>
 </BaseLayout>
+
+<style>
+  .map-note {
+    margin-top: var(--space-3);
+    margin-bottom: var(--space-4);
+    font-size: 0.9rem;
+    color: var(--color-ink-soft);
+  }
+</style>

@@ -1,0 +1,44 @@
+---
+interface Props {
+  active: 'rides' | 'events';
+}
+const { active } = Astro.props;
+---
+
+<div class="section-switch" role="tablist" aria-label="Browse recurring rides or events">
+  <a href="/rides/" role="tab" aria-selected={active === 'rides'} class="section-switch__item">
+    Recurring Rides
+  </a>
+  <a href="/events/" role="tab" aria-selected={active === 'events'} class="section-switch__item">
+    Events
+  </a>
+</div>
+
+<style>
+  .section-switch {
+    display: inline-flex;
+    padding: 0.3em;
+    background: var(--color-paper-alt);
+    border: 1px solid var(--color-line);
+    border-radius: 999px;
+    margin-bottom: var(--space-4);
+  }
+
+  .section-switch__item {
+    padding: 0.5em 1.2em;
+    border-radius: 999px;
+    font-weight: 600;
+    font-size: 0.9rem;
+    color: var(--color-ink-soft);
+    text-decoration: none;
+  }
+
+  .section-switch__item:hover {
+    color: var(--color-ink);
+  }
+
+  .section-switch__item[aria-selected='true'] {
+    background: var(--color-ink);
+    color: var(--color-paper);
+  }
+</style>

@@ -2,6 +2,8 @@
 import { getCollection } from 'astro:content';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import PageHero from '../../components/PageHero.astro';
+import SectionSwitch from '../../components/SectionSwitch.astro';
+import RideMap from '../../components/RideMap.astro';
 import FilterBar from '../../components/FilterBar.astro';
 import ListingCard from '../../components/ListingCard.astro';
 import { resolveOrganizerName } from '../../lib/organizer';
@@ -40,6 +42,21 @@ const cards = await Promise.all(
 );
 
 cards.sort((a, b) => Number(b.featured) - Number(a.featured) || a.name.localeCompare(b.name));
+
+const rideMarkers = await Promise.all(
+  allRides
+    .filter((ride) => ride.data.startLocation.lat != null && ride.data.startLocation.lng != null)
+    .map(async (ride) => ({
+      id: ride.id,
+      kind: 'ride' as const,
+      name: ride.data.name,
+      organizerName: await resolveOrganizerName(ride.data),
+      lat: ride.data.startLocation.lat as number,
+      lng: ride.data.startLocation.lng as number,
+      href: `/rides/${ride.id}/`,
+      summary: formatRideSchedule(ride.data),
+    }))
+);
 
 const DAY_ORDER = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
 
@@ -81,6 +98,13 @@ const filterGroups = [
 
   <section class="section">
     <div class="container">
+      <SectionSwitch active="rides" />
+
+      <RideMap markers={rideMarkers} height="24rem" showLegend={false} />
+      <p class="map-note">
+        Only rides with a confirmed start location appear on the map — everything else is still listed below.
+      </p>
+
       <FilterBar
         groups={filterGroups}
         nounSingular="ride"
@@ -112,3 +136,12 @@ const filterGroups = [
     </div>
   </section>
 </BaseLayout>
+
+<style>
+  .map-note {
+    margin-top: var(--space-3);
+    margin-bottom: var(--space-4);
+    font-size: 0.9rem;
+    color: var(--color-ink-soft);
+  }
+</style>
