@@ -69,6 +69,21 @@ function toISODate(date: Date): string {
   return `${date.getFullYear()}-${pad2(date.getMonth() + 1)}-${pad2(date.getDate())}`;
 }
 
+// Parses "5:30 PM"-style strings for sort order; anything unparseable sorts last.
+function timeToMinutes(time?: string): number {
+  const match = time?.match(/(\d{1,2}):(\d{2})\s*([AP]M)/i);
+  if (!match) return Number.POSITIVE_INFINITY;
+  let hours = parseInt(match[1], 10) % 12;
+  if (/PM/i.test(match[3])) hours += 12;
+  return hours * 60 + parseInt(match[2], 10);
+}
+
+function startOfWeek(date: Date): Date {
+  const start = new Date(date.getFullYear(), date.getMonth(), date.getDate());
+  start.setDate(start.getDate() - start.getDay());
+  return start;
+}
+
 function inSeason(ride: CalRide, monthIndex: number): boolean {
   if (!ride.seasonStart || !ride.seasonEnd) return true;
   const start = MONTH_INDEX[ride.seasonStart];
@@ -94,81 +109,121 @@ function init() {
 
   const today = new Date();
   const todayISO = toISODate(today);
-  let viewYear = today.getFullYear();
-  let viewMonth = today.getMonth();
+  let view: 'month' | 'week' = 'month';
+  let anchor = new Date(today.getFullYear(), today.getMonth(), today.getDate());
 
-  function render() {
-    if (!gridEl || !labelEl) return;
-    labelEl.textContent = `${MONTH_NAMES[viewMonth]} ${viewYear}`;
+  function buildCellHtml(cellDate: Date, isOutside: boolean): string {
+    const iso = toISODate(cellDate);
+    const weekday = DAY_NAMES[cellDate.getDay()];
+    const isToday = iso === todayISO;
 
-    const firstOfMonth = new Date(viewYear, viewMonth, 1);
+    const dayEvents = events
+      .filter((e) => e.dateISO === iso)
+      .sort((a, b) => timeToMinutes(a.time) - timeToMinutes(b.time));
+    const dayRides = rides
+      .filter((r) => r.days.includes(weekday) && inSeason(r, cellDate.getMonth()))
+      .sort((a, b) => timeToMinutes(a.time) - timeToMinutes(b.time));
+
+    const entryHtml = [
+      ...dayEvents.map((e) => {
+        const label = `⭐ ${e.time ? `${escapeHtml(e.time)} ` : ''}${escapeHtml(e.name)}`;
+        const title = `${e.name}${e.time ? ` · ${e.time}` : ''} (one-time event)`;
+        return `<a class="cal-entry cal-entry--event" href="${e.href}" title="${escapeHtml(title)}">${label}</a>`;
+      }),
+      ...dayRides.map((r) => {
+        const color = colorForRide(r.id);
+        const label = `${r.time ? `${escapeHtml(r.time)} ` : ''}${escapeHtml(r.name)}`;
+        const title = `${r.name}${r.time ? ` · ${r.time}` : ''} (recurring ride)`;
+        return `<a class="cal-entry cal-entry--ride" style="background:${color.bg};color:${color.fg}" href="${r.href}" title="${escapeHtml(title)}">${label}</a>`;
+      }),
+    ].join('');
+
+    return `
+      <div class="cal-cell${isOutside ? ' is-outside' : ''}${isToday ? ' is-today' : ''}">
+        <time class="cal-cell__date" datetime="${iso}">${cellDate.getDate()}</time>
+        <div class="cal-cell__entries">${entryHtml}</div>
+      </div>
+    `;
+  }
+
+  function renderMonth() {
+    labelEl!.textContent = `${MONTH_NAMES[anchor.getMonth()]} ${anchor.getFullYear()}`;
+
+    const firstOfMonth = new Date(anchor.getFullYear(), anchor.getMonth(), 1);
     const startOffset = firstOfMonth.getDay();
-    const daysInMonth = new Date(viewYear, viewMonth + 1, 0).getDate();
+    const daysInMonth = new Date(anchor.getFullYear(), anchor.getMonth() + 1, 0).getDate();
     const totalCells = Math.ceil((startOffset + daysInMonth) / 7) * 7;
-    const gridStart = new Date(viewYear, viewMonth, 1 - startOffset);
+    const gridStart = new Date(anchor.getFullYear(), anchor.getMonth(), 1 - startOffset);
 
     let html = '';
     for (let i = 0; i < totalCells; i += 1) {
       const cellDate = new Date(gridStart.getFullYear(), gridStart.getMonth(), gridStart.getDate() + i);
-      const iso = toISODate(cellDate);
-      const weekday = DAY_NAMES[cellDate.getDay()];
-      const isOutside = cellDate.getMonth() !== viewMonth;
-      const isToday = iso === todayISO;
-
-      const dayEvents = events.filter((e) => e.dateISO === iso);
-      const dayRides = rides.filter((r) => r.days.includes(weekday) && inSeason(r, cellDate.getMonth()));
-
-      const entryHtml = [
-        ...dayEvents.map((e) => {
-          const label = `⭐ ${e.time ? `${escapeHtml(e.time)} ` : ''}${escapeHtml(e.name)}`;
-          const title = `${e.name}${e.time ? ` · ${e.time}` : ''} (one-time event)`;
-          return `<a class="cal-entry cal-entry--event" href="${e.href}" title="${escapeHtml(title)}">${label}</a>`;
-        }),
-        ...dayRides.map((r) => {
-          const color = colorForRide(r.id);
-          const label = `${r.time ? `${escapeHtml(r.time)} ` : ''}${escapeHtml(r.name)}`;
-          const title = `${r.name}${r.time ? ` · ${r.time}` : ''} (recurring ride)`;
-          return `<a class="cal-entry cal-entry--ride" style="background:${color.bg};color:${color.fg}" href="${r.href}" title="${escapeHtml(title)}">${label}</a>`;
-        }),
-      ].join('');
-
-      html += `
-        <div class="cal-cell${isOutside ? ' is-outside' : ''}${isToday ? ' is-today' : ''}">
-          <time class="cal-cell__date" datetime="${iso}">${cellDate.getDate()}</time>
-          <div class="cal-cell__entries">${entryHtml}</div>
-        </div>
-      `;
+      html += buildCellHtml(cellDate, cellDate.getMonth() !== anchor.getMonth());
     }
-    gridEl.innerHTML = html;
+    gridEl!.innerHTML = html;
+  }
+
+  function renderWeek() {
+    const weekStart = startOfWeek(anchor);
+    const weekEnd = new Date(weekStart.getFullYear(), weekStart.getMonth(), weekStart.getDate() + 6);
+    const sameMonth = weekStart.getMonth() === weekEnd.getMonth();
+    const startLabel = `${MONTH_NAMES[weekStart.getMonth()].slice(0, 3)} ${weekStart.getDate()}`;
+    const endLabel = sameMonth
+      ? `${weekEnd.getDate()}, ${weekEnd.getFullYear()}`
+      : `${MONTH_NAMES[weekEnd.getMonth()].slice(0, 3)} ${weekEnd.getDate()}, ${weekEnd.getFullYear()}`;
+    labelEl!.textContent = `${startLabel}–${endLabel}`;
+
+    let html = '';
+    for (let i = 0; i < 7; i += 1) {
+      const cellDate = new Date(weekStart.getFullYear(), weekStart.getMonth(), weekStart.getDate() + i);
+      html += buildCellHtml(cellDate, false);
+    }
+    gridEl!.innerHTML = html;
+  }
+
+  function render() {
+    if (!gridEl || !labelEl) return;
+    root!.classList.toggle('is-week-view', view === 'week');
+    if (view === 'week') renderWeek();
+    else renderMonth();
   }
 
   prevBtn?.addEventListener('click', () => {
-    viewMonth -= 1;
-    if (viewMonth < 0) {
-      viewMonth = 11;
-      viewYear -= 1;
-    }
+    anchor =
+      view === 'month'
+        ? new Date(anchor.getFullYear(), anchor.getMonth() - 1, 1)
+        : new Date(anchor.getFullYear(), anchor.getMonth(), anchor.getDate() - 7);
     render();
   });
 
   nextBtn?.addEventListener('click', () => {
-    viewMonth += 1;
-    if (viewMonth > 11) {
-      viewMonth = 0;
-      viewYear += 1;
-    }
+    anchor =
+      view === 'month'
+        ? new Date(anchor.getFullYear(), anchor.getMonth() + 1, 1)
+        : new Date(anchor.getFullYear(), anchor.getMonth(), anchor.getDate() + 7);
     render();
   });
 
   todayBtn?.addEventListener('click', () => {
-    viewYear = today.getFullYear();
-    viewMonth = today.getMonth();
+    anchor = new Date(today.getFullYear(), today.getMonth(), today.getDate());
     render();
   });
 
   root.querySelectorAll<HTMLInputElement>('[data-cal-toggle]').forEach((checkbox) => {
     checkbox.addEventListener('change', () => {
       root.classList.toggle(`hide-${checkbox.dataset.calToggle}`, !checkbox.checked);
+    });
+  });
+
+  root.querySelectorAll<HTMLButtonElement>('[data-cal-view]').forEach((btn) => {
+    btn.addEventListener('click', () => {
+      const nextView = btn.dataset.calView as 'month' | 'week';
+      if (nextView === view) return;
+      view = nextView;
+      root!.querySelectorAll('[data-cal-view]').forEach((b) => b.classList.toggle('is-active', b === btn));
+      prevBtn?.setAttribute('aria-label', view === 'week' ? 'Previous week' : 'Previous month');
+      nextBtn?.setAttribute('aria-label', view === 'week' ? 'Next week' : 'Next month');
+      render();
     });
   });
 

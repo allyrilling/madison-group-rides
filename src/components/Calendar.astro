@@ -41,6 +41,10 @@ const WEEKDAY_LABELS = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
       </button>
     </div>
     <div class="calendar__controls">
+      <div class="cal-view-toggle" role="group" aria-label="Calendar view">
+        <button type="button" data-cal-view="month" class="cal-view-btn is-active">Month</button>
+        <button type="button" data-cal-view="week" class="cal-view-btn">Week</button>
+      </div>
       <button type="button" data-cal-today class="btn btn--secondary calendar__today">Today</button>
       <label class="cal-toggle">
         <input type="checkbox" data-cal-toggle="ride" checked />
@@ -122,6 +126,32 @@ const WEEKDAY_LABELS = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
     font-size: 0.85rem;
   }
 
+  .cal-view-toggle {
+    display: inline-flex;
+    border: 1px solid var(--color-line-strong);
+    border-radius: 999px;
+    overflow: hidden;
+  }
+
+  .cal-view-btn {
+    border: none;
+    background: #fff;
+    color: var(--color-ink-soft);
+    padding: 0.4em 0.9em;
+    font-size: 0.85rem;
+    font-weight: 600;
+    cursor: pointer;
+  }
+
+  .cal-view-btn + .cal-view-btn {
+    border-left: 1px solid var(--color-line-strong);
+  }
+
+  .cal-view-btn.is-active {
+    background: var(--color-lake-bright);
+    color: var(--color-ink);
+  }
+
   .cal-toggle {
     display: inline-flex;
     align-items: center;
@@ -140,7 +170,7 @@ const WEEKDAY_LABELS = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
   }
 
   .cal-toggle__dot--ride {
-    background: var(--color-lake-bright);
+    background: conic-gradient(from 0deg, #e63946, #f4a300, #f9dc5c, #2a9d8f, #457b9d, #6a4c93, #e63946);
   }
 
   .cal-toggle__dot--event {
@@ -212,6 +242,20 @@ const WEEKDAY_LABELS = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
     gap: 0.2em;
     overflow-y: auto;
     max-height: 6rem;
+  }
+
+  .calendar.is-week-view .cal-cell {
+    min-height: 16rem;
+  }
+
+  .calendar.is-week-view .cal-cell__entries {
+    max-height: 14rem;
+  }
+
+  .calendar.is-week-view .cal-entry {
+    white-space: normal;
+    overflow: visible;
+    text-overflow: clip;
   }
 
   .cal-entry {
