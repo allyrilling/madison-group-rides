@@ -74,101 +74,103 @@ const filterGroups = [
   title="Local Bike Shops"
   description="Independent and shop-run bike stores around Madison, WI — addresses, hours, and the group rides they host."
 >
-  <PageHero
-    eyebrow="Bike Shops"
-    title="Local bike shops"
-    description="Madison-area bike shops — where to get a bike fit, a repair, or find the group ride that starts at their front door."
-  />
+  <PageHero compact title="Bike Shops" />
 
   <section class="section">
     <div class="container">
-      <OrganizerMap markers={mapMarkers} />
+      <div class="listing-layout">
+        <aside class="listing-layout__filters">
+          <FilterBar
+            groups={filterGroups}
+            nounSingular="shop"
+            nounPlural="shops"
+            searchPlaceholder="Search shops…"
+          />
+        </aside>
+        <div class="listing-layout__main">
+          <OrganizerMap markers={mapMarkers} height="18rem" />
 
-      <FilterBar
-        groups={filterGroups}
-        nounSingular="shop"
-        nounPlural="shops"
-        searchPlaceholder="Search shops…"
-      />
-      <p data-filter-empty hidden class="empty-state">
-        No shops match those filters — try clearing one or two.
-      </p>
+          <p data-filter-empty hidden class="empty-state">
+            No shops match those filters — try clearing one or two.
+          </p>
 
-      <div class="table-scroll">
-        <table class="shop-table">
-          <thead>
-            <tr>
-              <th scope="col">Shop</th>
-              <th scope="col">Address</th>
-              <th scope="col">Phone</th>
-              <th scope="col">Hours</th>
-              <th scope="col">Links</th>
-              <th scope="col">Rides &amp; events</th>
-            </tr>
-          </thead>
-          <tbody data-filter-grid>
-            {
-              rows.map((row) => (
-                <tr class="listing-card" id={row.id} data-city={row.city}>
-                  <th scope="row">
-                    <span class="shop-table__name">{row.name}</span>
-                    <div class="shop-table__desc">
-                      <row.Content />
-                    </div>
-                  </th>
-                  <td>
-                    {row.address ? (
-                      <>
-                        <Icon name="map-pin" class="shop-table__icon" />
-                        {row.address}
-                      </>
-                    ) : (
-                      '—'
-                    )}
-                  </td>
-                  <td>
-                    {row.phone ? (
-                      <a href={`tel:${row.phone.replace(/[^\d+]/g, '')}`}>{row.phone}</a>
-                    ) : (
-                      '—'
-                    )}
-                  </td>
-                  <td>{row.hours ?? '—'}</td>
-                  <td>
-                    <div class="shop-table__links">
-                      {row.website && (
-                        <a href={row.website} target="_blank" rel="noopener noreferrer">
-                          Website
-                        </a>
-                      )}
-                      {Object.entries(row.social ?? {})
-                        .filter(([, v]) => v)
-                        .map(([platform, url]) => (
-                          <a href={url as string} target="_blank" rel="noopener noreferrer">
-                            {platform.charAt(0).toUpperCase() + platform.slice(1)}
-                          </a>
-                        ))}
-                      {!row.website && !Object.values(row.social ?? {}).some(Boolean) && '—'}
-                    </div>
-                  </td>
-                  <td>
-                    {row.related.length > 0 ? (
-                      <ul class="shop-table__related">
-                        {row.related.map((item) => (
-                          <li>
-                            <a href={item.href}>{item.label}</a>
-                          </li>
-                        ))}
-                      </ul>
-                    ) : (
-                      '—'
-                    )}
-                  </td>
+          <div class="table-scroll">
+            <table class="shop-table">
+              <thead>
+                <tr>
+                  <th scope="col">Shop</th>
+                  <th scope="col">Address</th>
+                  <th scope="col">Phone</th>
+                  <th scope="col">Hours</th>
+                  <th scope="col">Links</th>
+                  <th scope="col">Rides &amp; events</th>
                 </tr>
-              ))
-            }
-          </tbody>
-        </table>
+              </thead>
+              <tbody data-filter-grid>
+                {
+                  rows.map((row) => (
+                    <tr class="listing-card" id={row.id} data-city={row.city}>
+                      <th scope="row">
+                        <span class="shop-table__name">{row.name}</span>
+                        <div class="shop-table__desc">
+                          <row.Content />
+                        </div>
+                      </th>
+                      <td>
+                        {row.address ? (
+                          <>
+                            <Icon name="map-pin" class="shop-table__icon" />
+                            {row.address}
+                          </>
+                        ) : (
+                          '—'
+                        )}
+                      </td>
+                      <td>
+                        {row.phone ? (
+                          <a href={`tel:${row.phone.replace(/[^\d+]/g, '')}`}>{row.phone}</a>
+                        ) : (
+                          '—'
+                        )}
+                      </td>
+                      <td>{row.hours ?? '—'}</td>
+                      <td>
+                        <div class="shop-table__links">
+                          {row.website && (
+                            <a href={row.website} target="_blank" rel="noopener noreferrer">
+                              Website
+                            </a>
+                          )}
+                          {Object.entries(row.social ?? {})
+                            .filter(([, v]) => v)
+                            .map(([platform, url]) => (
+                              <a href={url as string} target="_blank" rel="noopener noreferrer">
+                                {platform.charAt(0).toUpperCase() + platform.slice(1)}
+                              </a>
+                            ))}
+                          {!row.website && !Object.values(row.social ?? {}).some(Boolean) && '—'}
+                        </div>
+                      </td>
+                      <td>
+                        {row.related.length > 0 ? (
+                          <ul class="shop-table__related">
+                            {row.related.map((item) => (
+                              <li>
+                                <a href={item.href}>{item.label}</a>
+                              </li>
+                            ))}
+                          </ul>
+                        ) : (
+                          '—'
+                        )}
+                      </td>
+                    </tr>
+                  ))
+                }
+              </tbody>
+            </table>
+          </div>
+        </div>
       </div>
     </div>
   </section>

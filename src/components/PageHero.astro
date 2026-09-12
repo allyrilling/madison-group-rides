@@ -6,21 +6,35 @@ interface Props {
   eyebrow?: string;
   title: string;
   description?: string;
+  compact?: boolean;
 }
 
-const { eyebrow, title, description } = Astro.props;
+const { eyebrow, title, description, compact = false } = Astro.props;
 ---
 
-<section class="page-hero">
-  <IsthmusMotif class="page-hero__motif" />
-  <CapitolGlyph class="page-hero__capitol" />
-  <div class="container page-hero__inner">
-    {eyebrow && <p class="eyebrow">{eyebrow}</p>}
-    <h1>{title}</h1>
-    {description && <p class="lede">{description}</p>}
-    <slot />
-  </div>
-</section>
+{
+  compact ? (
+    <section class="page-hero page-hero--compact">
+      <div class="container page-hero__inner page-hero__inner--compact">
+        <h1>{title}</h1>
+        <div class="page-hero__actions">
+          <slot />
+        </div>
+      </div>
+    </section>
+  ) : (
+    <section class="page-hero">
+      <IsthmusMotif class="page-hero__motif" />
+      <CapitolGlyph class="page-hero__capitol" />
+      <div class="container page-hero__inner">
+        {eyebrow && <p class="eyebrow">{eyebrow}</p>}
+        <h1>{title}</h1>
+        {description && <p class="lede">{description}</p>}
+        <slot />
+      </div>
+    </section>
+  )
+}
 
 <style>
   .page-hero {
@@ -31,9 +45,30 @@ const { eyebrow, title, description } = Astro.props;
     padding-block: var(--space-6);
   }
 
+  .page-hero--compact {
+    padding-block: var(--space-3);
+  }
+
   .page-hero__inner {
     position: relative;
     z-index: 1;
+  }
+
+  .page-hero__inner--compact {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: var(--space-3);
+  }
+
+  .page-hero__inner--compact h1 {
+    font-size: 1.35rem;
+    margin: 0;
+  }
+
+  .page-hero__actions:empty {
+    display: none;
   }
 </style>
 

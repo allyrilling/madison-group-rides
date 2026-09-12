@@ -105,49 +105,52 @@ const filterGroups = [
   title="Recurring Rides"
   description="Weekly and seasonal group bike rides around Madison, WI — filter by day, pace, terrain, and more."
 >
-  <PageHero
-    eyebrow="Recurring Rides"
-    title="Find your weekly ride"
-    description="Shop rides, club rides, and informal group rides that happen week after week around Madison. Filter by day, pace, or terrain to find your people."
-  />
+  <PageHero compact title="Recurring Rides">
+    <SectionSwitch active="rides" />
+  </PageHero>
 
   <section class="section">
     <div class="container">
-      <SectionSwitch active="rides" />
-
-      <RideMap markers={rideMarkers} height="24rem" showLegend={false} />
-      <p class="map-note">
-        Only rides with a confirmed start location appear on the map — everything else is still listed below.
-      </p>
-
-      <FilterBar
-        groups={filterGroups}
-        nounSingular="ride"
-        nounPlural="rides"
-        searchPlaceholder="Search rides or organizers…"
-      />
-      <p data-filter-empty hidden class="empty-state">
-        No rides match those filters — try clearing one or two.
-      </p>
-      <div class="card-grid" data-filter-grid>
-        {
-          cards.map((card) => (
-            <ListingCard
-              href={`/rides/${card.id}/`}
-              name={card.name}
-              organizerName={card.organizerName}
-              metaLine={card.metaLine}
-              distanceLabel={card.distanceLabel}
-              paceLabel={card.paceLabel}
-              dropLabel={card.dropLabel}
-              terrain={card.terrain}
-              featured={card.featured}
-              winterHiatus={card.winterHiatus}
-              hasNotes={card.hasNotes}
-              filterData={card.filterData}
-            />
-          ))
-        }
+      <div class="listing-layout">
+        <aside class="listing-layout__filters">
+          <FilterBar
+            groups={filterGroups}
+            nounSingular="ride"
+            nounPlural="rides"
+            searchPlaceholder="Search rides or organizers…"
+          />
+        </aside>
+        <div class="listing-layout__main">
+          <div>
+            <RideMap markers={rideMarkers} height="20rem" showLegend={false} />
+            <p class="map-note">
+              Only rides with a confirmed start location appear on the map — everything else is still listed below.
+            </p>
+          </div>
+          <p data-filter-empty hidden class="empty-state">
+            No rides match those filters — try clearing one or two.
+          </p>
+          <div class="card-grid" data-filter-grid>
+            {
+              cards.map((card) => (
+                <ListingCard
+                  href={`/rides/${card.id}/`}
+                  name={card.name}
+                  organizerName={card.organizerName}
+                  metaLine={card.metaLine}
+                  distanceLabel={card.distanceLabel}
+                  paceLabel={card.paceLabel}
+                  dropLabel={card.dropLabel}
+                  terrain={card.terrain}
+                  featured={card.featured}
+                  winterHiatus={card.winterHiatus}
+                  hasNotes={card.hasNotes}
+                  filterData={card.filterData}
+                />
+              ))
+            }
+          </div>
+        </div>
       </div>
     </div>
   </section>

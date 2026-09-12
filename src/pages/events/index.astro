@@ -86,47 +86,50 @@ const filterGroups = [
   title="Events"
   description="One-time and annual group bike rides, fondos, and charity rides around Madison, WI."
 >
-  <PageHero
-    eyebrow="Events"
-    title="Century rides, fondos & fundraisers"
-    description="Dated, one-time (or once-a-year) organized rides around Madison — from hilly centuries to family-friendly fundraisers."
-  />
+  <PageHero compact title="Events">
+    <SectionSwitch active="events" />
+  </PageHero>
 
   <section class="section">
     <div class="container">
-      <SectionSwitch active="events" />
-
-      <RideMap markers={eventMarkers} height="24rem" showLegend={false} />
-      <p class="map-note">
-        Only events with a confirmed start location appear on the map — everything else is still listed below.
-      </p>
-
-      <FilterBar
-        groups={filterGroups}
-        nounSingular="event"
-        nounPlural="events"
-        searchPlaceholder="Search events or organizers…"
-      />
-      <p data-filter-empty hidden class="empty-state">
-        No events match those filters — try clearing one or two.
-      </p>
-      <div class="card-grid" data-filter-grid>
-        {
-          cards.map((card) => (
-            <ListingCard
-              href={`/events/${card.id}/`}
-              name={card.name}
-              organizerName={card.organizerName}
-              metaLine={card.metaLine}
-              distanceLabel={card.distanceLabel}
-              paceLabel={card.paceLabel}
-              terrain={card.terrain}
-              featured={card.featured}
-              hasNotes={card.hasNotes}
-              filterData={card.filterData}
-            />
-          ))
-        }
+      <div class="listing-layout">
+        <aside class="listing-layout__filters">
+          <FilterBar
+            groups={filterGroups}
+            nounSingular="event"
+            nounPlural="events"
+            searchPlaceholder="Search events or organizers…"
+          />
+        </aside>
+        <div class="listing-layout__main">
+          <div>
+            <RideMap markers={eventMarkers} height="20rem" showLegend={false} />
+            <p class="map-note">
+              Only events with a confirmed start location appear on the map — everything else is still listed below.
+            </p>
+          </div>
+          <p data-filter-empty hidden class="empty-state">
+            No events match those filters — try clearing one or two.
+          </p>
+          <div class="card-grid" data-filter-grid>
+            {
+              cards.map((card) => (
+                <ListingCard
+                  href={`/events/${card.id}/`}
+                  name={card.name}
+                  organizerName={card.organizerName}
+                  metaLine={card.metaLine}
+                  distanceLabel={card.distanceLabel}
+                  paceLabel={card.paceLabel}
+                  terrain={card.terrain}
+                  featured={card.featured}
+                  hasNotes={card.hasNotes}
+                  filterData={card.filterData}
+                />
+              ))
+            }
+          </div>
+        </div>
       </div>
     </div>
   </section>

@@ -10,6 +10,9 @@ function init() {
   const countEl = bar.querySelector<HTMLElement>('[data-filter-count]');
   const clearBtn = bar.querySelector<HTMLButtonElement>('[data-filter-clear]');
   const searchInput = bar.querySelector<HTMLInputElement>('[data-filter-search]');
+  const toggleBtn = bar.querySelector<HTMLButtonElement>('[data-filter-toggle]');
+  const panel = bar.querySelector<HTMLElement>('[data-filter-panel]');
+  const toggleCountEl = bar.querySelector<HTMLElement>('[data-filter-active-count]');
   const singular = bar.dataset.nounSingular ?? 'result';
   const plural = bar.dataset.nounPlural ?? 'results';
   const emptyStateEl = document.querySelector<HTMLElement>('[data-filter-empty]');
@@ -72,6 +75,11 @@ function init() {
     if (emptyStateEl) {
       emptyStateEl.hidden = visibleCount !== 0;
     }
+    if (toggleCountEl) {
+      const activeCount = checkboxes.filter((cb) => cb.checked).length + (searchInput?.value.trim() ? 1 : 0);
+      toggleCountEl.textContent = String(activeCount);
+      toggleCountEl.hidden = activeCount === 0;
+    }
     writeParams();
   }
 
@@ -83,8 +91,22 @@ function init() {
     apply();
   });
 
+  toggleBtn?.addEventListener('click', () => {
+    if (!panel) return;
+    const expanded = toggleBtn.getAttribute('aria-expanded') === 'true';
+    panel.hidden = expanded;
+    toggleBtn.setAttribute('aria-expanded', String(!expanded));
+  });
+
   readParams();
   apply();
+
+  // Collapsed by default on narrow viewports; left open on wide ones where
+  // the filter panel lives in the sticky rail instead of an accordion.
+  if (panel && toggleBtn && window.matchMedia('(max-width: 959px)').matches) {
+    panel.hidden = true;
+    toggleBtn.setAttribute('aria-expanded', 'false');
+  }
 }
 
 if (document.readyState === 'loading') {

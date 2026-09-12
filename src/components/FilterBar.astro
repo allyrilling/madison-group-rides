@@ -18,30 +18,39 @@ const { groups, nounSingular, nounPlural, searchPlaceholder = 'Search by name or
 ---
 
 <div class="filter-bar" data-noun-singular={nounSingular} data-noun-plural={nounPlural}>
-  <div class="filter-bar__search">
-    <Icon name="filter" class="filter-bar__search-icon" />
-    <input type="search" data-filter-search placeholder={searchPlaceholder} aria-label={searchPlaceholder} />
-  </div>
+  <button type="button" class="filter-bar__toggle" data-filter-toggle aria-expanded="true" aria-controls="filter-panel">
+    <Icon name="filter" class="filter-bar__toggle-icon" />
+    <span>Filters</span>
+    <span class="filter-bar__toggle-count" data-filter-active-count hidden>0</span>
+    <Icon name="chevron-down" class="filter-bar__toggle-chevron" />
+  </button>
 
-  <div class="filter-bar__groups">
-    {groups.map((group) => (
-      <fieldset class="filter-bar__group">
-        <legend>{group.label}</legend>
-        <div class="filter-bar__chips">
-          {group.options.map((opt) => (
-            <label class="filter-chip">
-              <input type="checkbox" name={group.key} value={opt.value} />
-              <span>{opt.label}</span>
-            </label>
-          ))}
-        </div>
-      </fieldset>
-    ))}
-  </div>
+  <div class="filter-bar__panel" data-filter-panel id="filter-panel">
+    <div class="filter-bar__search">
+      <Icon name="filter" class="filter-bar__search-icon" />
+      <input type="search" data-filter-search placeholder={searchPlaceholder} aria-label={searchPlaceholder} />
+    </div>
 
-  <div class="filter-bar__footer">
-    <p class="filter-bar__count" data-filter-count aria-live="polite"></p>
-    <button type="button" data-filter-clear class="btn btn--ghost">Clear filters</button>
+    <div class="filter-bar__groups">
+      {groups.map((group) => (
+        <fieldset class="filter-bar__group">
+          <legend>{group.label}</legend>
+          <div class="filter-bar__chips">
+            {group.options.map((opt) => (
+              <label class="filter-chip">
+                <input type="checkbox" name={group.key} value={opt.value} />
+                <span>{opt.label}</span>
+              </label>
+            ))}
+          </div>
+        </fieldset>
+      ))}
+    </div>
+
+    <div class="filter-bar__footer">
+      <p class="filter-bar__count" data-filter-count aria-live="polite"></p>
+      <button type="button" data-filter-clear class="btn btn--ghost">Clear filters</button>
+    </div>
   </div>
 </div>
 
@@ -50,9 +59,60 @@ const { groups, nounSingular, nounPlural, searchPlaceholder = 'Search by name or
     background: #fff;
     border: 1px solid var(--color-line);
     border-radius: var(--radius);
-    padding: var(--space-4);
     box-shadow: var(--shadow-card);
-    margin-bottom: var(--space-4);
+    overflow: hidden;
+  }
+
+  .filter-bar__toggle {
+    display: none;
+    width: 100%;
+    align-items: center;
+    gap: 0.6em;
+    padding: var(--space-3) var(--space-4);
+    background: none;
+    border: none;
+    font: inherit;
+    font-weight: 700;
+    color: var(--color-ink);
+    cursor: pointer;
+    text-align: left;
+  }
+
+  .filter-bar__toggle-icon {
+    width: 18px;
+    height: 18px;
+    color: var(--color-lake);
+    flex-shrink: 0;
+  }
+
+  .filter-bar__toggle-count {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 1.4em;
+    height: 1.4em;
+    padding: 0 0.4em;
+    border-radius: 999px;
+    background: var(--color-cardinal);
+    color: #fff;
+    font-size: 0.75rem;
+    font-weight: 700;
+  }
+
+  .filter-bar__toggle-chevron {
+    width: 16px;
+    height: 16px;
+    margin-left: auto;
+    flex-shrink: 0;
+    transition: transform 0.15s ease;
+  }
+
+  .filter-bar__toggle[aria-expanded='true'] .filter-bar__toggle-chevron {
+    transform: rotate(180deg);
+  }
+
+  .filter-bar__panel {
+    padding: var(--space-4);
   }
 
   .filter-bar__search {
@@ -82,8 +142,8 @@ const { groups, nounSingular, nounPlural, searchPlaceholder = 'Search by name or
 
   .filter-bar__groups {
     display: flex;
-    flex-wrap: wrap;
-    gap: var(--space-4);
+    flex-direction: column;
+    gap: var(--space-3);
     margin-bottom: var(--space-3);
   }
 
@@ -91,7 +151,7 @@ const { groups, nounSingular, nounPlural, searchPlaceholder = 'Search by name or
     border: none;
     padding: 0;
     margin: 0;
-    min-width: 11rem;
+    min-width: 0;
   }
 
   .filter-bar__group legend {
@@ -144,9 +204,9 @@ const { groups, nounSingular, nounPlural, searchPlaceholder = 'Search by name or
 
   .filter-bar__footer {
     display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: var(--space-3);
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--space-2);
     border-top: 1px solid var(--color-line);
     padding-top: var(--space-3);
   }
@@ -155,6 +215,16 @@ const { groups, nounSingular, nounPlural, searchPlaceholder = 'Search by name or
     margin: 0;
     font-size: 0.9rem;
     color: var(--color-ink-soft);
+  }
+
+  @media (max-width: 959px) {
+    .filter-bar__toggle {
+      display: flex;
+    }
+
+    .filter-bar__panel {
+      border-top: 1px solid var(--color-line);
+    }
   }
 </style>
 

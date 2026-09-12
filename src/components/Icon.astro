@@ -20,7 +20,8 @@ interface Props {
     | 'map'
     | 'ruler'
     | 'gauge'
-    | 'snowflake';
+    | 'snowflake'
+    | 'chevron-down';
   class?: string;
 }
 const { name, class: className = '' } = Astro.props;
@@ -44,6 +45,7 @@ const paths: Record<Props['name'], string> = {
   ruler: 'M3 9h18v6H3V9Z M7 9v3M11 9v3M15 9v3M19 9v3',
   gauge: 'M4 16a8 8 0 0 1 16 0M12 16 16 10',
   snowflake: 'M12 3v18M19.8 7.5 4.2 16.5M19.8 16.5 4.2 7.5',
+  'chevron-down': 'M6 9l6 6 6-6',
 };
 
 const d = paths[name];
