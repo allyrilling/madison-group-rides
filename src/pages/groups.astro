@@ -1,0 +1,98 @@
+---
+import { getCollection, render } from 'astro:content';
+import BaseLayout from '../layouts/BaseLayout.astro';
+import PageHero from '../components/PageHero.astro';
+import FilterBar from '../components/FilterBar.astro';
+import OrganizerCard from '../components/OrganizerCard.astro';
+import { ORGANIZER_TYPE_LABELS } from '../lib/labels';
+
+const groups = await getCollection('organizers', ({ data }) => data.type !== 'shop');
+const rides = await getCollection('rides', ({ data }) => data.active);
+const events = await getCollection('events', ({ data }) => data.active);
+
+function relatedFor(organizerId: string) {
+  const relRides = rides
+    .filter((r) => r.data.organizer?.id === organizerId)
+    .map((r) => ({ href: `/rides/${r.id}/`, label: r.data.name }));
+  const relEvents = events
+    .filter((e) => e.data.organizer?.id === organizerId)
+    .map((e) => ({ href: `/events/${e.id}/`, label: e.data.name }));
+  return [...relRides, ...relEvents];
+}
+
+const cards = await Promise.all(
+  groups.map(async (group) => {
+    const { Content } = await render(group);
+    return {
+      id: group.id,
+      name: group.data.name,
+      type: group.data.type,
+      address: group.data.address,
+      phone: group.data.phone,
+      hours: group.data.hours,
+      website: group.data.website,
+      social: group.data.social,
+      hasNotes: false,
+      related: relatedFor(group.id),
+      Content,
+      filterData: { type: group.data.type },
+    };
+  })
+);
+
+cards.sort((a, b) => a.name.localeCompare(b.name));
+
+const TYPE_ORDER = ['club', 'team', 'nonprofit', 'informal-group'];
+
+const filterGroups = [
+  {
+    key: 'type',
+    label: 'Type',
+    options: TYPE_ORDER.map((value) => ({ value, label: ORGANIZER_TYPE_LABELS[value] })),
+  },
+];
+---
+
+<BaseLayout
+  title="Bike Groups"
+  description="Cycling clubs, teams, and informal group-ride communities around Madison, WI."
+>
+  <PageHero
+    eyebrow="Bike Groups"
+    title="Clubs & community groups"
+    description="Cycling clubs, race teams, advocacy nonprofits, and informal groups around Madison — join one to find riding partners at your pace."
+  />
+
+  <section class="section">
+    <div class="container">
+      <FilterBar
+        groups={filterGroups}
+        nounSingular="group"
+        nounPlural="groups"
+        searchPlaceholder="Search groups…"
+      />
+      <p data-filter-empty hidden class="empty-state">
+        No groups match those filters — try clearing one or two.
+      </p>
+      <div class="card-grid" data-filter-grid>
+        {
+          cards.map((card) => (
+            <OrganizerCard
+              name={card.name}
+              type={card.type}
+              address={card.address}
+              phone={card.phone}
+              hours={card.hours}
+              website={card.website}
+              social={card.social}
+              related={card.related}
+              hasNotes={card.hasNotes}
+              Content={card.Content}
+              filterData={card.filterData}
+            />
+          ))
+        }
+      </div>
+    </div>
+  </section>
+</BaseLayout>

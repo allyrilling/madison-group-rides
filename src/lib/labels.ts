@@ -30,6 +30,14 @@ export const DROP_LABELS: Record<string, string> = {
   varies: 'Varies',
 };
 
+export const ORGANIZER_TYPE_LABELS: Record<string, string> = {
+  shop: 'Bike Shop',
+  club: 'Cycling Club',
+  team: 'Racing Team',
+  nonprofit: 'Nonprofit / Advocacy',
+  'informal-group': 'Informal Group',
+};
+
 export const DAY_ABBREVIATIONS: Record<string, string> = {
   Sunday: 'Sun',
   Monday: 'Mon',
