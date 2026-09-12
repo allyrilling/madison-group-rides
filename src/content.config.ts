@@ -45,6 +45,13 @@ const organizers = defineCollection({
       })
       .optional(),
     logo: z.string().optional(),
+    address: z.string().optional(), // shops: street address
+    lat: z.number().optional(), // shops: geocoded from `address`, for map pins
+    lng: z.number().optional(),
+    phone: z.string().optional(), // shops: contact phone
+    hours: z.string().optional(), // shops: human-readable store hours
+    sourceUrl: z.string().url().optional(),
+    lastVerified: z.coerce.date().optional(),
   }),
 });
 

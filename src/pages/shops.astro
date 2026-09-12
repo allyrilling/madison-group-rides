@@ -1,0 +1,251 @@
+---
+import { getCollection, render } from 'astro:content';
+import BaseLayout from '../layouts/BaseLayout.astro';
+import PageHero from '../components/PageHero.astro';
+import FilterBar from '../components/FilterBar.astro';
+import OrganizerMap from '../components/OrganizerMap.astro';
+import Icon from '../components/Icon.astro';
+
+const shops = await getCollection('organizers', ({ data }) => data.type === 'shop');
+const rides = await getCollection('rides', ({ data }) => data.active);
+const events = await getCollection('events', ({ data }) => data.active);
+
+function relatedFor(organizerId: string) {
+  const relRides = rides
+    .filter((r) => r.data.organizer?.id === organizerId)
+    .map((r) => ({ href: `/rides/${r.id}/`, label: r.data.name }));
+  const relEvents = events
+    .filter((e) => e.data.organizer?.id === organizerId)
+    .map((e) => ({ href: `/events/${e.id}/`, label: e.data.name }));
+  return [...relRides, ...relEvents];
+}
+
+const rows = await Promise.all(
+  shops.map(async (shop) => {
+    const { Content } = await render(shop);
+    return {
+      id: shop.id,
+      name: shop.data.name,
+      address: shop.data.address,
+      lat: shop.data.lat,
+      lng: shop.data.lng,
+      phone: shop.data.phone,
+      hours: shop.data.hours,
+      website: shop.data.website,
+      social: shop.data.social,
+      related: relatedFor(shop.id),
+      Content,
+    };
+  })
+);
+
+rows.sort((a, b) => a.name.localeCompare(b.name));
+
+const mapMarkers = rows
+  .filter((r): r is typeof r & { lat: number; lng: number } => r.lat != null && r.lng != null)
+  .map((r) => ({ id: r.id, name: r.name, address: r.address, lat: r.lat, lng: r.lng }));
+---
+
+<BaseLayout
+  title="Local Bike Shops"
+  description="Independent and shop-run bike stores around Madison, WI — addresses, hours, and the group rides they host."
+>
+  <PageHero
+    eyebrow="Bike Shops"
+    title="Local bike shops"
+    description="Madison-area bike shops — where to get a bike fit, a repair, or find the group ride that starts at their front door."
+  />
+
+  <section class="section">
+    <div class="container">
+      <OrganizerMap markers={mapMarkers} />
+
+      <FilterBar
+        groups={[]}
+        nounSingular="shop"
+        nounPlural="shops"
+        searchPlaceholder="Search shops…"
+      />
+      <p data-filter-empty hidden class="empty-state">
+        No shops match that search.
+      </p>
+
+      <div class="table-scroll">
+        <table class="shop-table">
+          <thead>
+            <tr>
+              <th scope="col">Shop</th>
+              <th scope="col">Address</th>
+              <th scope="col">Phone</th>
+              <th scope="col">Hours</th>
+              <th scope="col">Links</th>
+              <th scope="col">Rides &amp; events</th>
+            </tr>
+          </thead>
+          <tbody data-filter-grid>
+            {
+              rows.map((row) => (
+                <tr class="listing-card" id={row.id}>
+                  <th scope="row">
+                    <span class="shop-table__name">{row.name}</span>
+                    <div class="shop-table__desc">
+                      <row.Content />
+                    </div>
+                  </th>
+                  <td>
+                    {row.address ? (
+                      <>
+                        <Icon name="map-pin" class="shop-table__icon" />
+                        {row.address}
+                      </>
+                    ) : (
+                      '—'
+                    )}
+                  </td>
+                  <td>
+                    {row.phone ? (
+                      <a href={`tel:${row.phone.replace(/[^\d+]/g, '')}`}>{row.phone}</a>
+                    ) : (
+                      '—'
+                    )}
+                  </td>
+                  <td>{row.hours ?? '—'}</td>
+                  <td>
+                    <div class="shop-table__links">
+                      {row.website && (
+                        <a href={row.website} target="_blank" rel="noopener noreferrer">
+                          Website
+                        </a>
+                      )}
+                      {Object.entries(row.social ?? {})
+                        .filter(([, v]) => v)
+                        .map(([platform, url]) => (
+                          <a href={url as string} target="_blank" rel="noopener noreferrer">
+                            {platform.charAt(0).toUpperCase() + platform.slice(1)}
+                          </a>
+                        ))}
+                      {!row.website && !Object.values(row.social ?? {}).some(Boolean) && '—'}
+                    </div>
+                  </td>
+                  <td>
+                    {row.related.length > 0 ? (
+                      <ul class="shop-table__related">
+                        {row.related.map((item) => (
+                          <li>
+                            <a href={item.href}>{item.label}</a>
+                          </li>
+                        ))}
+                      </ul>
+                    ) : (
+                      '—'
+                    )}
+                  </td>
+                </tr>
+              ))
+            }
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .table-scroll {
+    overflow-x: auto;
+    border: 1px solid var(--color-line);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow-card);
+    background: #fff;
+  }
+
+  .shop-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.9rem;
+  }
+
+  .shop-table th,
+  .shop-table td {
+    padding: var(--space-3);
+    text-align: left;
+    vertical-align: top;
+    border-bottom: 1px solid var(--color-line);
+  }
+
+  .shop-table thead th {
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: var(--color-lake-deep);
+    background: var(--color-paper-alt);
+    white-space: nowrap;
+  }
+
+  .shop-table tbody tr:last-child th,
+  .shop-table tbody tr:last-child td {
+    border-bottom: none;
+  }
+
+  .shop-table tbody tr[hidden] {
+    display: none;
+  }
+
+  .shop-table tbody th {
+    font-weight: 600;
+    min-width: 14rem;
+  }
+
+  .shop-table__name {
+    display: block;
+    font-family: var(--font-display);
+    font-weight: 600;
+    color: var(--color-lake-deep);
+    margin-bottom: 0.3em;
+  }
+
+  .shop-table__desc {
+    font-weight: 400;
+    font-size: 0.85rem;
+    color: var(--color-ink-soft);
+  }
+
+  .shop-table__desc :global(p) {
+    margin: 0;
+  }
+
+  .shop-table__icon {
+    width: 13px;
+    height: 13px;
+    color: var(--color-lake);
+    vertical-align: -1px;
+    margin-right: 0.2em;
+  }
+
+  .shop-table__links {
+    display: flex;
+    flex-direction: column;
+    gap: 0.3em;
+  }
+
+  .shop-table__links a {
+    font-weight: 600;
+    color: var(--color-lake-deep);
+    white-space: nowrap;
+  }
+
+  .shop-table__related {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.3em;
+  }
+
+  .shop-table__related a {
+    font-weight: 600;
+    white-space: nowrap;
+  }
+</style>

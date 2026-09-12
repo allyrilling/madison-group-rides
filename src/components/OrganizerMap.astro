@@ -1,0 +1,41 @@
+---
+import 'maplibre-gl/dist/maplibre-gl.css';
+
+interface MarkerInput {
+  id: string;
+  name: string;
+  address?: string;
+  lat: number;
+  lng: number;
+}
+
+interface Props {
+  markers: MarkerInput[];
+  height?: string;
+}
+
+const { markers, height = '24rem' } = Astro.props;
+const markersJson = JSON.stringify(markers).replace(/</g, '\\u003c');
+---
+
+<div class="organizer-map-wrap">
+  <div id="organizer-map" style={`height: ${height};`}></div>
+  <script type="application/json" id="organizer-map-data" set:html={markersJson} is:inline />
+</div>
+
+<style>
+  .organizer-map-wrap {
+    border: 1px solid var(--color-line);
+    border-radius: var(--radius);
+    overflow: hidden;
+    box-shadow: var(--shadow-card);
+    margin-bottom: var(--space-4);
+  }
+
+  #organizer-map {
+    width: 100%;
+    background: var(--color-paper-alt);
+  }
+</style>
+
+<script src="../scripts/organizer-map.ts"></script>
