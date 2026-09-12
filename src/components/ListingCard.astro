@@ -41,9 +41,24 @@ const {
     {metaLine}
   </p>
   <div class="listing-card__stats">
-    {distanceLabel && <span class="tag">{distanceLabel}</span>}
-    {paceLabel && <span class="tag">{paceLabel}</span>}
-    {dropLabel && <span class="tag">{dropLabel}</span>}
+    {distanceLabel && (
+      <span class="tag">
+        <Icon name="ruler" class="tag__icon" />
+        {distanceLabel}
+      </span>
+    )}
+    {paceLabel && (
+      <span class="tag">
+        <Icon name="gauge" class="tag__icon" />
+        {paceLabel}
+      </span>
+    )}
+    {dropLabel && (
+      <span class="tag">
+        <Icon name="users" class="tag__icon" />
+        {dropLabel}
+      </span>
+    )}
     {terrain.map((t) => (
       <span class="tag tag--cardinal">
         <Icon name={TERRAIN_ICONS[t] ?? 'bike'} class="tag__icon" />

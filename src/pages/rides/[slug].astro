@@ -9,6 +9,7 @@ import {
   PACE_LABELS,
   DROP_LABELS,
   TERRAIN_LABELS,
+  TERRAIN_ICONS,
 } from '../../lib/labels';
 
 export async function getStaticPaths() {
@@ -21,12 +22,17 @@ const { Content } = await render(ride);
 const organizer = await resolveOrganizerEntry(ride.data);
 const organizerName = organizer?.data.name ?? ride.data.organizerName;
 
-const badges = [
-  formatDistance(ride.data.distanceMiles),
-  formatPace(ride.data.paceMph) ?? PACE_LABELS[ride.data.paceCategory],
-  DROP_LABELS[ride.data.dropStyle],
-  ...ride.data.terrain.map((t) => TERRAIN_LABELS[t] ?? t),
-].filter((b): b is string => Boolean(b));
+const distanceLabel = formatDistance(ride.data.distanceMiles);
+const paceLabel = formatPace(ride.data.paceMph) ?? PACE_LABELS[ride.data.paceCategory];
+const dropLabel = DROP_LABELS[ride.data.dropStyle];
+
+const badges: { icon: 'ruler' | 'gauge' | 'users' | 'road' | 'gravel' | 'mountain' | 'trail' | 'bike'; label: string }[] = [];
+if (distanceLabel) badges.push({ icon: 'ruler', label: distanceLabel });
+if (paceLabel) badges.push({ icon: 'gauge', label: paceLabel });
+if (dropLabel) badges.push({ icon: 'users', label: dropLabel });
+for (const t of ride.data.terrain) {
+  badges.push({ icon: TERRAIN_ICONS[t] ?? 'bike', label: TERRAIN_LABELS[t] ?? t });
+}
 
 const mapMarkers =
   ride.data.startLocation.lat != null && ride.data.startLocation.lng != null

@@ -14,11 +14,13 @@ interface MarkerInput {
   summary: string;
 }
 
+type BadgeIcon = 'ruler' | 'gauge' | 'users' | 'road' | 'gravel' | 'mountain' | 'trail' | 'bike';
+
 interface Props {
   eyebrow: string;
   title: string;
   scheduleLabel: string;
-  badges: string[];
+  badges: { icon: BadgeIcon; label: string }[];
   description: string;
   locationName: string;
   locationAddress?: string;
@@ -80,7 +82,12 @@ const socialEntries = Object.entries(organizerSocial ?? {}).filter(([, v]) => v)
       }
 
       <div class="detail-hero__badges">
-        {badges.map((b) => <span class="tag">{b}</span>)}
+        {badges.map((b) => (
+          <span class="tag">
+            <Icon name={b.icon} class="tag__icon" />
+            {b.label}
+          </span>
+        ))}
       </div>
     </div>
   </section>
@@ -215,6 +222,12 @@ const socialEntries = Object.entries(organizerSocial ?? {}).filter(([, v]) => v)
     display: flex;
     flex-wrap: wrap;
     gap: 0.4em;
+  }
+
+  .tag__icon {
+    width: 13px;
+    height: 13px;
+    margin-right: 0.3em;
   }
 
   .detail-flag {
