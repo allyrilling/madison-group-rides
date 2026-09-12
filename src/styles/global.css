@@ -267,7 +267,7 @@ ol {
   background: #fff;
 }
 
-/* Leaflet custom pin markers (injected client-side, so these must be global) */
+/* Map custom pin markers (injected client-side, so these must be global) */
 .map-pin {
   display: block;
   width: 18px;
