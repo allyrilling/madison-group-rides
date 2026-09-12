@@ -20,6 +20,10 @@ function relatedFor(organizerId: string) {
   return [...relRides, ...relEvents];
 }
 
+function cityFor(address?: string) {
+  return address?.split(',')[1]?.trim() ?? 'Madison';
+}
+
 const rows = await Promise.all(
   shops.map(async (shop) => {
     const { Content } = await render(shop);
@@ -27,6 +31,7 @@ const rows = await Promise.all(
       id: shop.id,
       name: shop.data.name,
       address: shop.data.address,
+      city: cityFor(shop.data.address),
       lat: shop.data.lat,
       lng: shop.data.lng,
       phone: shop.data.phone,
@@ -44,6 +49,25 @@ rows.sort((a, b) => a.name.localeCompare(b.name));
 const mapMarkers = rows
   .filter((r): r is typeof r & { lat: number; lng: number } => r.lat != null && r.lng != null)
   .map((r) => ({ id: r.id, name: r.name, address: r.address, lat: r.lat, lng: r.lng }));
+
+const CITY_ORDER = ['Madison', 'Middleton', 'Sun Prairie', 'Verona'];
+const cities = Array.from(new Set(rows.map((r) => r.city)));
+cities.sort((a, b) => {
+  const ai = CITY_ORDER.indexOf(a);
+  const bi = CITY_ORDER.indexOf(b);
+  if (ai !== -1 && bi !== -1) return ai - bi;
+  if (ai !== -1) return -1;
+  if (bi !== -1) return 1;
+  return a.localeCompare(b);
+});
+
+const filterGroups = [
+  {
+    key: 'city',
+    label: 'Area',
+    options: cities.map((c) => ({ value: c, label: c })),
+  },
+];
 ---
 
 <BaseLayout
@@ -61,13 +85,13 @@ const mapMarkers = rows
       <OrganizerMap markers={mapMarkers} />
 
       <FilterBar
-        groups={[]}
+        groups={filterGroups}
         nounSingular="shop"
         nounPlural="shops"
         searchPlaceholder="Search shops…"
       />
       <p data-filter-empty hidden class="empty-state">
-        No shops match that search.
+        No shops match those filters — try clearing one or two.
       </p>
 
       <div class="table-scroll">
@@ -85,7 +109,7 @@ const mapMarkers = rows
           <tbody data-filter-grid>
             {
               rows.map((row) => (
-                <tr class="listing-card" id={row.id}>
+                <tr class="listing-card" id={row.id} data-city={row.city}>
                   <th scope="row">
                     <span class="shop-table__name">{row.name}</span>
                     <div class="shop-table__desc">
