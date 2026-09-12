@@ -2,9 +2,9 @@
 import { defineConfig } from 'astro/config';
 import sitemap from '@astrojs/sitemap';
 
-// TODO: once deployed, set this to your real Netlify URL (or custom domain).
+// TODO: once bikemadison.org is live, point this at the custom domain instead.
 // It's used to generate the sitemap and canonical/OG URLs.
-const SITE_URL = 'https://madison-group-rides.netlify.app';
+const SITE_URL = 'https://bikemadison.netlify.app';
 
 // https://astro.build/config
 export default defineConfig({
