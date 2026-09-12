@@ -15,7 +15,7 @@ const {
   image,
 } = Astro.props;
 
-const pageTitle = title === 'Madison Group Rides' ? title : `${title} · Madison Group Rides`;
+const pageTitle = title === 'Bike Madison' ? title : `${title} · Bike Madison`;
 const canonicalURL = new URL(Astro.url.pathname, Astro.site);
 const ogImage = image ? new URL(image, Astro.site) : new URL('/og-image.png', Astro.site);
 ---

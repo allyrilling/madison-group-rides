@@ -1,4 +1,4 @@
-# Madison Group Rides
+# Bike Madison
 
 An independent catalog of group bicycle rides, clubs, and events around Madison, Wisconsin — recurring shop/club rides, one-time centuries and fondos, a filterable list view, and a map.
 
