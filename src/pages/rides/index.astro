@@ -6,6 +6,7 @@ import SectionSwitch from '../../components/SectionSwitch.astro';
 import RideMap from '../../components/RideMap.astro';
 import FilterBar from '../../components/FilterBar.astro';
 import ListingCard from '../../components/ListingCard.astro';
+import RideQuiz from '../../components/RideQuiz.astro';
 import { resolveOrganizerName } from '../../lib/organizer';
 import {
   formatDistance,
@@ -62,6 +63,7 @@ const rideMarkers = await Promise.all(
       lng: ride.data.startLocation.lng as number,
       href: `/rides/${ride.id}/`,
       summary: formatRideSchedule(ride.data),
+      winterHiatus: ride.data.winterHiatus,
     }))
 );
 
@@ -111,6 +113,11 @@ const filterGroups = [
 
   <section class="section">
     <div class="container">
+      <RideQuiz
+        dayOptions={filterGroups.find((g) => g.key === 'day')!.options}
+        paceOptions={filterGroups.find((g) => g.key === 'pace')!.options}
+        terrainOptions={filterGroups.find((g) => g.key === 'terrain')!.options}
+      />
       <div class="listing-layout">
         <aside class="listing-layout__filters">
           <FilterBar
@@ -121,12 +128,7 @@ const filterGroups = [
           />
         </aside>
         <div class="listing-layout__main">
-          <div>
-            <RideMap markers={rideMarkers} height="20rem" showLegend={false} />
-            <p class="map-note">
-              Only rides with a confirmed start location appear on the map — everything else is still listed below.
-            </p>
-          </div>
+          <RideMap markers={rideMarkers} height="20rem" showLegend={false} />
           <p data-filter-empty hidden class="empty-state">
             No rides match those filters — try clearing one or two.
           </p>
@@ -155,12 +157,3 @@ const filterGroups = [
     </div>
   </section>
 </BaseLayout>
-
-<style>
-  .map-note {
-    margin-top: var(--space-3);
-    margin-bottom: var(--space-4);
-    font-size: 0.9rem;
-    color: var(--color-ink-soft);
-  }
-</style>

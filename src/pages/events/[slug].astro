@@ -2,7 +2,16 @@
 import { getCollection, render } from 'astro:content';
 import DetailPage from '../../components/DetailPage.astro';
 import { resolveOrganizerEntry } from '../../lib/organizer';
-import { formatDistance, formatEventDate, PACE_LABELS, TERRAIN_LABELS, TERRAIN_ICONS } from '../../lib/labels';
+import {
+  formatDistance,
+  formatEventDate,
+  PACE_LABELS,
+  TERRAIN_LABELS,
+  TERRAIN_ICONS,
+  DISTANCE_TOOLTIP,
+  PACE_TOOLTIP,
+  TERRAIN_TOOLTIPS,
+} from '../../lib/labels';
 
 export async function getStaticPaths() {
   const events = await getCollection('events');
@@ -17,11 +26,11 @@ const organizerName = organizer?.data.name ?? event.data.organizerName;
 const distanceLabel = formatDistance(event.data.distanceMiles);
 const paceLabel = event.data.paceCategory ? PACE_LABELS[event.data.paceCategory] : null;
 
-const badges: { icon: 'ruler' | 'gauge' | 'users' | 'road' | 'gravel' | 'mountain' | 'trail' | 'bike'; label: string }[] = [];
-if (distanceLabel) badges.push({ icon: 'ruler', label: distanceLabel });
-if (paceLabel) badges.push({ icon: 'gauge', label: paceLabel });
+const badges: { icon: 'ruler' | 'gauge' | 'users' | 'road' | 'gravel' | 'mountain' | 'trail' | 'bike'; label: string; tooltip?: string }[] = [];
+if (distanceLabel) badges.push({ icon: 'ruler', label: distanceLabel, tooltip: DISTANCE_TOOLTIP });
+if (paceLabel) badges.push({ icon: 'gauge', label: paceLabel, tooltip: PACE_TOOLTIP });
 for (const t of event.data.terrain) {
-  badges.push({ icon: TERRAIN_ICONS[t] ?? 'bike', label: TERRAIN_LABELS[t] ?? t });
+  badges.push({ icon: TERRAIN_ICONS[t] ?? 'bike', label: TERRAIN_LABELS[t] ?? t, tooltip: TERRAIN_TOOLTIPS[t] });
 }
 
 const mapMarkers =

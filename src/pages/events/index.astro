@@ -102,12 +102,7 @@ const filterGroups = [
           />
         </aside>
         <div class="listing-layout__main">
-          <div>
-            <RideMap markers={eventMarkers} height="20rem" showLegend={false} />
-            <p class="map-note">
-              Only events with a confirmed start location appear on the map — everything else is still listed below.
-            </p>
-          </div>
+          <RideMap markers={eventMarkers} height="20rem" showLegend={false} />
           <p data-filter-empty hidden class="empty-state">
             No events match those filters — try clearing one or two.
           </p>
@@ -134,12 +129,3 @@ const filterGroups = [
     </div>
   </section>
 </BaseLayout>
-
-<style>
-  .map-note {
-    margin-top: var(--space-3);
-    margin-bottom: var(--space-4);
-    font-size: 0.9rem;
-    color: var(--color-ink-soft);
-  }
-</style>

@@ -143,7 +143,10 @@ function init() {
 
     return `
       <div class="cal-cell${isOutside ? ' is-outside' : ''}${isToday ? ' is-today' : ''}">
-        <time class="cal-cell__date" datetime="${iso}">${cellDate.getDate()}</time>
+        <div class="cal-cell__head">
+          <time class="cal-cell__date" datetime="${iso}">${cellDate.getDate()}</time>
+          <span class="cal-cell__weekday">${weekday.slice(0, 3)}</span>
+        </div>
         <div class="cal-cell__entries">${entryHtml}</div>
       </div>
     `;

@@ -1,3 +1,5 @@
+export {};
+
 type FilterState = Record<string, Set<string>>;
 
 function init() {

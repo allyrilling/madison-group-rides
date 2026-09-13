@@ -10,6 +10,10 @@ import {
   DROP_LABELS,
   TERRAIN_LABELS,
   TERRAIN_ICONS,
+  DISTANCE_TOOLTIP,
+  PACE_TOOLTIP,
+  DROP_STYLE_TOOLTIP,
+  TERRAIN_TOOLTIPS,
 } from '../../lib/labels';
 
 export async function getStaticPaths() {
@@ -26,12 +30,12 @@ const distanceLabel = formatDistance(ride.data.distanceMiles);
 const paceLabel = formatPace(ride.data.paceMph) ?? PACE_LABELS[ride.data.paceCategory];
 const dropLabel = DROP_LABELS[ride.data.dropStyle];
 
-const badges: { icon: 'ruler' | 'gauge' | 'users' | 'road' | 'gravel' | 'mountain' | 'trail' | 'bike'; label: string }[] = [];
-if (distanceLabel) badges.push({ icon: 'ruler', label: distanceLabel });
-if (paceLabel) badges.push({ icon: 'gauge', label: paceLabel });
-if (dropLabel) badges.push({ icon: 'users', label: dropLabel });
+const badges: { icon: 'ruler' | 'gauge' | 'users' | 'road' | 'gravel' | 'mountain' | 'trail' | 'bike'; label: string; tooltip?: string }[] = [];
+if (distanceLabel) badges.push({ icon: 'ruler', label: distanceLabel, tooltip: DISTANCE_TOOLTIP });
+if (paceLabel) badges.push({ icon: 'gauge', label: paceLabel, tooltip: PACE_TOOLTIP });
+if (dropLabel) badges.push({ icon: 'users', label: dropLabel, tooltip: DROP_STYLE_TOOLTIP });
 for (const t of ride.data.terrain) {
-  badges.push({ icon: TERRAIN_ICONS[t] ?? 'bike', label: TERRAIN_LABELS[t] ?? t });
+  badges.push({ icon: TERRAIN_ICONS[t] ?? 'bike', label: TERRAIN_LABELS[t] ?? t, tooltip: TERRAIN_TOOLTIPS[t] });
 }
 
 const mapMarkers =
@@ -46,6 +50,7 @@ const mapMarkers =
           lng: ride.data.startLocation.lng,
           href: `/rides/${ride.id}/`,
           summary: formatRideSchedule(ride.data),
+          winterHiatus: ride.data.winterHiatus,
         },
       ]
     : [];

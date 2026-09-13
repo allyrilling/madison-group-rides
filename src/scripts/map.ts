@@ -12,6 +12,7 @@ interface MapMarker {
   lng: number;
   href: string;
   summary: string;
+  winterHiatus?: boolean;
 }
 
 function escapeHtml(value: string): string {
@@ -49,7 +50,7 @@ function init() {
   const bounds = new maplibregl.LngLatBounds();
 
   markers.forEach((m) => {
-    const color = m.kind === 'ride' ? '#29abe2' : '#c5050c';
+    const color = m.winterHiatus ? '#8a97a0' : m.kind === 'ride' ? '#29abe2' : '#c5050c';
     const organizerLine = m.organizerName ? `${escapeHtml(m.organizerName)}<br>` : '';
     const popup = new maplibregl.Popup({ offset: 20 }).setHTML(
       `<div class="map-popup"><strong>${escapeHtml(m.name)}</strong>${organizerLine}${escapeHtml(m.summary)}<br><a href="${m.href}">View details →</a></div>`

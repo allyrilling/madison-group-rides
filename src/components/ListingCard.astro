@@ -1,6 +1,15 @@
 ---
 import Icon from './Icon.astro';
-import { TERRAIN_ICONS, TERRAIN_LABELS, WINTER_HIATUS_LABEL } from '../lib/labels.ts';
+import {
+  TERRAIN_ICONS,
+  TERRAIN_LABELS,
+  WINTER_HIATUS_LABEL,
+  WINTER_HIATUS_TOOLTIP,
+  DISTANCE_TOOLTIP,
+  PACE_TOOLTIP,
+  DROP_STYLE_TOOLTIP,
+  TERRAIN_TOOLTIPS,
+} from '../lib/labels.ts';
 
 interface Props {
   href: string;
@@ -44,31 +53,31 @@ const {
   </p>
   <div class="listing-card__stats">
     {winterHiatus && (
-      <span class="tag tag--frost">
+      <span class="tag tag--frost" data-tooltip={WINTER_HIATUS_TOOLTIP}>
         <Icon name="snowflake" class="tag__icon" />
         {WINTER_HIATUS_LABEL}
       </span>
     )}
     {distanceLabel && (
-      <span class="tag">
+      <span class="tag" data-tooltip={DISTANCE_TOOLTIP}>
         <Icon name="ruler" class="tag__icon" />
         {distanceLabel}
       </span>
     )}
     {paceLabel && (
-      <span class="tag">
+      <span class="tag" data-tooltip={PACE_TOOLTIP}>
         <Icon name="gauge" class="tag__icon" />
         {paceLabel}
       </span>
     )}
     {dropLabel && (
-      <span class="tag">
+      <span class="tag" data-tooltip={DROP_STYLE_TOOLTIP}>
         <Icon name="users" class="tag__icon" />
         {dropLabel}
       </span>
     )}
     {terrain.map((t) => (
-      <span class="tag tag--cardinal">
+      <span class="tag tag--cardinal" data-tooltip={TERRAIN_TOOLTIPS[t]}>
         <Icon name={TERRAIN_ICONS[t] ?? 'bike'} class="tag__icon" />
         {TERRAIN_LABELS[t] ?? t}
       </span>
@@ -89,6 +98,10 @@ const {
     box-shadow: var(--shadow-card);
     transition: transform 0.15s ease, box-shadow 0.15s ease;
     position: relative;
+  }
+
+  .listing-card[hidden] {
+    display: none;
   }
 
   .listing-card:hover {
@@ -149,3 +162,5 @@ const {
     color: var(--color-gold-ink);
   }
 </style>
+
+<script src="../scripts/tooltip.ts"></script>

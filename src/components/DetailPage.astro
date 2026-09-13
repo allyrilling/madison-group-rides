@@ -20,7 +20,7 @@ interface Props {
   eyebrow: string;
   title: string;
   scheduleLabel: string;
-  badges: { icon: BadgeIcon; label: string }[];
+  badges: { icon: BadgeIcon; label: string; tooltip?: string }[];
   description: string;
   locationName: string;
   locationAddress?: string;
@@ -93,7 +93,7 @@ const socialEntries = Object.entries(organizerSocial ?? {}).filter(([, v]) => v)
 
       <div class="detail-hero__badges">
         {badges.map((b) => (
-          <span class="tag">
+          <span class="tag" data-tooltip={b.tooltip}>
             <Icon name={b.icon} class="tag__icon" />
             {b.label}
           </span>
@@ -381,3 +381,5 @@ const socialEntries = Object.entries(organizerSocial ?? {}).filter(([, v]) => v)
     }
   }
 </style>
+
+<script src="../scripts/tooltip.ts"></script>

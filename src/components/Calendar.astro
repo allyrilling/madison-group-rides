@@ -197,6 +197,16 @@ const WEEKDAY_LABELS = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
     text-transform: uppercase;
     color: var(--color-ink-soft);
   }
+
+  @media (max-width: 700px) {
+    .cal-grid--header {
+      display: none;
+    }
+
+    .cal-grid {
+      grid-template-columns: 1fr;
+    }
+  }
 </style>
 
 <style is:global>
@@ -226,6 +236,12 @@ const WEEKDAY_LABELS = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
     color: #fff;
   }
 
+  .cal-cell__head {
+    display: flex;
+    align-items: center;
+    gap: 0.5em;
+  }
+
   .cal-cell__date {
     display: inline-flex;
     align-items: center;
@@ -235,6 +251,16 @@ const WEEKDAY_LABELS = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
     border-radius: 50%;
     font-size: 0.8rem;
     font-weight: 700;
+    flex-shrink: 0;
+  }
+
+  .cal-cell__weekday {
+    display: none;
+    font-size: 0.72rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+    color: var(--color-ink-soft);
   }
 
   .cal-cell__entries {
@@ -300,17 +326,37 @@ const WEEKDAY_LABELS = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
   }
 
   @media (max-width: 700px) {
-    .cal-grid__weekday {
-      font-size: 0.65rem;
+    .cal-cell {
+      min-height: 0;
+      border-right: none;
     }
 
-    .cal-cell {
-      min-height: 4.5rem;
-      font-size: 0.9em;
+    .cal-cell.is-outside {
+      display: none;
+    }
+
+    .cal-cell__weekday {
+      display: inline;
+    }
+
+    .cal-cell__entries {
+      max-height: none;
+      overflow: visible;
     }
 
     .cal-entry {
-      font-size: 0.65rem;
+      font-size: 0.8rem;
+      white-space: normal;
+      overflow: visible;
+      text-overflow: clip;
+    }
+
+    .calendar.is-week-view .cal-cell {
+      min-height: 0;
+    }
+
+    .calendar.is-week-view .cal-cell__entries {
+      max-height: none;
     }
   }
 </style>

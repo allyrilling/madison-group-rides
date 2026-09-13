@@ -39,6 +39,19 @@ export const ORGANIZER_TYPE_LABELS: Record<string, string> = {
 };
 
 export const WINTER_HIATUS_LABEL = 'Winter hiatus';
+export const WINTER_HIATUS_TOOLTIP = 'This ride pauses for winter and picks back up when the season starts';
+
+export const DISTANCE_TOOLTIP = 'Approximate distance for this ride';
+export const PACE_TOOLTIP = 'How fast the group typically rides';
+export const DROP_STYLE_TOOLTIP = 'Whether the group waits for everyone (no-drop) or can split up (drop)';
+
+export const TERRAIN_TOOLTIPS: Record<string, string> = {
+  road: 'Paved roads',
+  gravel: 'Includes unpaved gravel roads',
+  mountain: 'Off-road singletrack mountain biking',
+  trail: 'Paved or crushed-limestone multi-use trail',
+  mixed: 'A mix of terrain types',
+};
 
 export const DAY_ABBREVIATIONS: Record<string, string> = {
   Sunday: 'Sun',
